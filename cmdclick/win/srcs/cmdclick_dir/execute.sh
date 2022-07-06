@@ -8,7 +8,7 @@ check_ini_file "${EXECUTE_FILE_PATH}"
 # lecho "${EXECUTE_FILE_PATH}"
 case "${SIGNAL_CODE}" in
 	"${OK_CODE}")
-		touch "${EXECUTE_FILE_PATH}"
+		touch "${EXECUTE_FILE_PATH}" &
 		EXEC_INPUT_EXECUTE="$(cat "${EXECUTE_FILE_PATH}" | grep "${INI_INPUT_EXECUTE}=" | sed 's/'${INI_INPUT_EXECUTE}'\=//')"
 		case "${EXEC_INPUT_EXECUTE}" in 
 			"C")

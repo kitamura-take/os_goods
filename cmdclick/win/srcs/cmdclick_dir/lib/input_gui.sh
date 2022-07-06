@@ -25,7 +25,7 @@ reload_cmd(){
 			esac
 			echo "${ini_file_list}"
 	esac
-	touch "${SECONDS_INI_FILE_DIR_PATH}"
+	touch "${SECONDS_INI_FILE_DIR_PATH}" &
 }
 
 exec_inc(){
@@ -177,24 +177,23 @@ input_cmd_index(){
 	esac	
 
 	local status_code=$?
- 	clear
- 	local sed_search_value1="${VALUE[1]#\/}"
- 	local hit_app_dir_file=$(rga --heading "${sed_search_value1}"  "${CMDCLICK_CONF_DIR_PATH}" | grep -B 1 "${CH_DIR_PATH}" | head -n 1)
+ 	clear &
+ 	local hit_app_dir_file=$(grep -r "${VALUE[1]}"  "${CMDCLICK_CONF_DIR_PATH}" | grep "${CH_DIR_PATH}" | sed 's/\:'${CH_DIR_PATH}'.*//')
  	# update app dir list order (recent used)
  	case "${hit_app_dir_file}" in 
  		"")
-			local rga_path1=$(echo "${sed_search_value1}" | sed 's/'${sed_home_path}'/\\$\\{HOME\\}/')
-			hit_app_dir_file=$(rga --heading "${rga_path1}" "${CMDCLICK_CONF_DIR_PATH}" | grep -B 1 "${CH_DIR_PATH}" | head -n 1)
+			local rga_path1=$(echo "${VALUE[1]}" | sed 's/'${sed_home_path}'/\\$\\{HOME\\}/')
+			hit_app_dir_file=$(grep -r "${rga_path1}"  "${CMDCLICK_CONF_DIR_PATH}" | grep "${CH_DIR_PATH}" | sed 's/\:'${CH_DIR_PATH}'.*//')
  			case "${hit_app_dir_file}" in
  				"") 
-					local rga_path2=$(echo "${sed_search_value1}"  | sed 's/'${sed_home_path}'/\\$HOME/')
-					hit_app_dir_file=$(rga --heading "${rga_path2}" "${CMDCLICK_CONF_DIR_PATH}" | grep -B 1 "${CH_DIR_PATH}" | head -n 1)
+					local rga_path2=$(echo "${VALUE[1]}"  | sed 's/'${sed_home_path}'/\\$HOME/')
+					hit_app_dir_file=$(grep -r "${rga_path1}"  "${CMDCLICK_CONF_DIR_PATH}" | grep "${CH_DIR_PATH}" | sed 's/\:'${CH_DIR_PATH}'.*//')
 					;;
 			esac
 			;;
 	esac
 	if [ -e "${hit_app_dir_file}" ]; then 
-		touch "${hit_app_dir_file}"
+		touch "${hit_app_dir_file}" &
 		echo "${GREP_INC_NUM}=1" > "${CMDCLICK_CONF_INC_CMD_PATH}"
 	fi
  	# lecho "status_code: ${status_code}"
@@ -222,9 +221,8 @@ input_cmd_index(){
 	# lecho "echo ${return_value} | grep ${CMDCLICK_EDIT_CMD}"
 	# lecho "return_value: ${return_value}"	
 	# alter SIGNAL_CODE to return_value 
-	local add_on=$(echo "${return_value}" | grep -i "${CMDCLICK_ADD_CMD}")
-	local delete_on=$(echo "${return_value}" | grep -i "${CMDCLICK_DELETE_CMD}")
-	local edit_on=$(echo "${return_value}" | grep -i "${CMDCLICK_EDIT_CMD}")
+	#on_sign=$(echo "${return_value}" | grep -o -e "${CMDCLICK_ADD_CMD}" -e "${CMDCLICK_DELETE_CMD}" -e "${CMDCLICK_EDIT_CMD}" -e "${CMDCLICK_CHANGE_DIR_CMD}")
+	#echo ${on_sign}
 	local cd_dir_on=$(echo "${return_value}" | grep -i "${CMDCLICK_CHANGE_DIR_CMD}")
 	#resolution_on=$(echo "${return_value[@]}" | grep "${CMDCLICK_RESOLUTION_CMD}")
 	# lecho "${return_value} grep ${CMDCLICK_CHANGE_DIR_CMD}"
@@ -236,11 +234,8 @@ input_cmd_index(){
 			SIGNAL_CODE=${EXIT_CODE}
 			;;
 		*)
-			if [ -z "${add_on}" ] && [ -z "${delete_on}" ] && [ -z "${edit_on}" ] && [ -z "${cd_dir_on}" ] && [ -z "${resolution_on}" ];then SIGNAL_CODE=${OK_CODE};
-			elif [ -n "${add_on}" ] ;then SIGNAL_CODE=${ADD_CODE}; 
+			if  [ -z "${cd_dir_on}" ] ;then SIGNAL_CODE=${OK_CODE};
 			elif [ -n "${cd_dir_on}" ];then SIGNAL_CODE=${CHDIR_CODE};
-			elif [ -n "${delete_on}" ];then SIGNAL_CODE=${DELETE_CODE};
-			elif [ -n "${edit_on}" ];then SIGNAL_CODE=${EDIT_CODE};
 			#elif [ -n "${resolution_on}" ];then SIGNAL_CODE=${RESOLUTION_CODE};
 			else SIGNAL_CODE=${INDEX_CODE}; fi
 		;;

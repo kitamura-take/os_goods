@@ -50,22 +50,21 @@ make_ini_contensts(){
   local get_valiable_nr=$(echo "${get_valiable}" | tr '\t' '\n')
   echo "${get_valiable_nr}" |  awk 'NR%8==3 || NR%8==6 || NR%8==7 || NR%8==0' | sort | uniq | wc -l | sed 's/\ //g'  | [ ! $(cat) -eq 4 ] && status_code=1;
   # lecho "status_code5: ${status_code}"
-  if [ -z "${get_valiable}" ];then lecho "get_valiable: nasi" ;
-  else lecho "get_valiable: ari" ;fi
   # lecho "get_valiable: ##${get_valiable}--"  | sed 's/\t//g' | sed 's/\ //g'
-  if [ ${status_code} -eq 1  ];then
-    local check_get_valiable=$(echo "${get_valiable}" | sed -e 's/\t//g' -e 's/\ //g')
-    if [ -z "${check_get_valiable}" ];then
-      echo "${CMDCLICK_EDITOR_CMD} ${EDIT_FILE_PATH}" | pbcopy &
-      dialog --title "${WINDOW_TITLE}"  --no-shadow --msgbox "no exest editable val\n\n  ${EDIT_FILE_PATH}" "${INFO_BOX_DEFAULT_SIZE[@]}"
-        SIGNAL_CODE=${EXIT_CODE}
-    else
-      echo "${CMDCLICK_EDITOR_CMD} ${EDIT_FILE_PATH}" | pbcopy &
-      local validate_err_message="manual repaire shell file: total err"
-      dialog --title "${WINDOW_TITLE}"  --no-shadow --msgbox "${validate_err_message}\n\n  ${EDIT_FILE_PATH}" "${INFO_BOX_DEFAULT_SIZE[@]}"
-        SIGNAL_CODE=${EXIT_CODE}
-    fi
-  fi
+  case ${status_code} in 
+    "1")
+      local check_get_valiable=$(echo "${get_valiable}" | sed -e 's/\t//g' -e 's/\ //g')
+      case "${check_get_valiable}" in 
+        "")
+          echo "${CMDCLICK_EDITOR_CMD} ${EDIT_FILE_PATH}" | pbcopy &
+          dialog --title "${WINDOW_TITLE}"  --no-shadow --msgbox "no exest editable val\n\n  ${EDIT_FILE_PATH}" "${INFO_BOX_DEFAULT_SIZE[@]}"
+            SIGNAL_CODE=${EXIT_CODE} ;;
+        *)
+          echo "${CMDCLICK_EDITOR_CMD} ${EDIT_FILE_PATH}" | pbcopy &
+          local validate_err_message="manual repaire shell file: total err"
+          dialog --title "${WINDOW_TITLE}"  --no-shadow --msgbox "${validate_err_message}\n\n  ${EDIT_FILE_PATH}" "${INFO_BOX_DEFAULT_SIZE[@]}"
+            SIGNAL_CODE=${EXIT_CODE} ;; esac
+      ;; esac
 }
 
 

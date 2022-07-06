@@ -17,6 +17,7 @@ LOOP=0
 cur_inc=$(cat "${CMDCLICK_CONF_INC_CMD_PATH}" 2>/dev/null | grep "^${GREP_INC_NUM}=" | sed 's/'${GREP_INC_NUM}'\=//' | sed '/^$/d')
 case "${cur_inc}" in 
 	"")
+
 		cur_inc=1
 		echo "${GREP_INC_NUM}=${cur_inc}" > "${CMDCLICK_CONF_INC_CMD_PATH}" &
 		;;
