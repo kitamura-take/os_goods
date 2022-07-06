@@ -151,8 +151,9 @@ sudo apt install -y fcitx-config-gtk
 #gnome-disk-utility:ディスクマウントや書き込み等
 #gimp 画像編集ソフト lxpolkit:guiでroot実行するのに必要 mousepad:メモ帳 lxinput:マウスやキーボードの設定
 #yad:gtk shell library gdb:cのdebug tool nkf:shift-jis等変換 jq:json扱うツール
-# fd-find:high speed find  rcs:diff3,merge
-sudo apt install -y pcmanfm xinput xinit nano synapse alacarte easystroke curl tlp tlp-rdw powertop git seahorse gnome-disk-utility xfce4-terminal xfce4-taskmanager dex snapd imwheel gufw xorgxrdp vino obconf numlockx samba gdebi gparted cifs-utils smbclient gnome-disk-utility wget mtools gimp file-roller lxpolkit mousepad lxinput catfish yad gdb thunar  thunar-archive-plugin nkf zip unzip rename lxc-utils jq openssh-client netdiscover fd-find colordiff rcs
+# fd-find:high speed find  rcs:diff3,merge 
+# libgtk2.0-0:i386:haroopad require package
+sudo apt install -y pcmanfm xinput xinit nano synapse alacarte easystroke curl tlp tlp-rdw powertop git seahorse gnome-disk-utility xfce4-terminal xfce4-taskmanager dex snapd imwheel gufw xorgxrdp vino obconf numlockx samba gdebi gparted cifs-utils smbclient gnome-disk-utility wget mtools gimp file-roller lxpolkit mousepad lxinput catfish yad gdb thunar  thunar-archive-plugin nkf zip unzip rename lxc-utils jq openssh-client netdiscover fd-find colordiff rcs libgtk2.0-0:i386
 # synblic link for fd
 sudo ln -s $(which fdfind) /usr/local/bin/fd
 # fzf install
@@ -510,7 +511,7 @@ fi
 if [ "${HARO_PAD_INSTALL_CONFIRM}" = "y" ]; then
   cd "${TARGET_HOME_DIR_PATH}"
   #wget https://bitbucket.org/rhiokim/haroopad-download/downloads/haroopad-v0.12.2-i386.deb
-  sudo cp -rvf "${SOURCE_FILES_DIR_PATH}/haroopad-v0.12.2-i386.deb" "${TARGET_HOME_DIR_PATH}/"
+  sudo cp -rvf "${SOURCE_FILES_DIR_PATH}/haroopad-v0.13.1-x64.deb" "${TARGET_HOME_DIR_PATH}/"
   cd "${TARGET_HOME_DIR_PATH}"
   sudo dpkg -i haroopad-v0.12.2-i386.deb
 fi
