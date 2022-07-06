@@ -5,7 +5,7 @@ get_inc_dir_file(){
 	#echo "CMDCLICK_APP_LIST_PATH: ${CMDCLICK_CONF_DIR_PATH}" >> "${CMDCLICK_APP_LIST_PATH}"
 	local sed_cmdclick_conf_dir_path=$(echo "${CMDCLICK_CONF_DIR_PATH}" | sed 's/\//\\\//g')
 	#echo "sed_cmdclick_conf_dir_path: ${sed_cmdclick_conf_dir_path}" >> "${CMDCLICK_APP_LIST_PATH}"
-	local change_dir_path_list=($(ls -ultF "${CMDCLICK_CONF_DIR_PATH}" | grep "${COMMAND_CLICK_EXTENSION}" | awk '{print $9}' | sed -e 's/^/'${sed_cmdclick_conf_dir_path}'\//g' -e '/^$/d'))
+	local change_dir_path_list=($(ls -t "${CMDCLICK_CONF_DIR_PATH}" | grep "${COMMAND_CLICK_EXTENSION}" | sed -e 's/^/'${sed_cmdclick_conf_dir_path}'\//g' -e '/^$/d'))
 	local change_dir_path=$(cat ${change_dir_path_list[@]} | grep "^${CH_DIR_PATH}=" | sed -e 's/^'${CH_DIR_PATH}'\=//' -e '/^$/d')
 	eval "echo \"${change_dir_path}\""  > "${CMDCLICK_APP_LIST_PATH}"
 	}
