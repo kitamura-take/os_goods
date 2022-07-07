@@ -7,6 +7,7 @@ CMDCLICK_MNT_PRFIX="/mnt"
 CMDCLICK_USE_SHELL='#!/bin/bash'
 CMDCLICL_MAXIMIZE_GEO="70 0 1530 900"
 CMCCLICL_RIGHT_SIZE="1100 130 510 780"
+box_size=(1230 730 730)
 CMDCLICK_LOG_ON=1
 
 ITEM_THREAD="ITEM_THREAD_CM2GUI"
@@ -195,7 +196,6 @@ EDIT_EDITOR_ON=""
 case  "${IMPORT_CMDCLICK_VAL}" in 
 	"")
 		# export DIALOGRC=${COLOR_DIR_PATH}/dialogrc
-		. ${LIB_DIR_PATH}/common.sh
 		. ${LIB_DIR_PATH}/add_cmd_ini.sh
 		. ${LIB_DIR_PATH}/delete_cmd.sh
 		. ${LIB_DIR_PATH}/resolution_cmd.sh
