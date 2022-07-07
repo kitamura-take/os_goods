@@ -9,7 +9,7 @@ reload_cmd(){
 
 	case "${SIGNAL_CODE}" in 
 		"${DELETE_CODE}"|"${EDIT_CODE}")
-				local ini_file_list=$(ls -ultF  "${SECONDS_INI_FILE_DIR_PATH}/" | sed 's/\*$//g' | grep -i ''${COMMAND_CLICK_EXTENSION}'' | awk '{print $9}' | sed -e '1i ['${display_sec_ini_path}']' -e 's/$/\t'${sed_dir_path}'/' | grep -v "${CMDCLICK_EDIT_CMD}" | grep -v "${CMDCLICK_DELETE_CMD}" | grep -v "${CMDCLICK_CHANGE_DIR_CMD}" | grep -v "${CMDCLICK_RESOLUTION_CMD}" | grep -v "${CMDCLICK_ADD_CMD}")
+				local ini_file_list=$(ls -t  "${SECONDS_INI_FILE_DIR_PATH}/" | sed 's/\*$//g' | grep -i ''${COMMAND_CLICK_EXTENSION}'' | sed -e '1i ['${display_sec_ini_path}']' -e 's/$/\t'${sed_dir_path}'/' | grep -v "${CMDCLICK_EDIT_CMD}" | grep -v "${CMDCLICK_DELETE_CMD}" | grep -v "${CMDCLICK_CHANGE_DIR_CMD}" | grep -v "${CMDCLICK_RESOLUTION_CMD}" | grep -v "${CMDCLICK_ADD_CMD}")
 				case "${ini_file_list}" in
 					"") 
 						local ini_file_list="$(cat <(echo "[${display_sec_ini_path}"]) <(echo "-") | sed 's/$/\t'${sed_dir_path}'/')"
@@ -17,7 +17,7 @@ reload_cmd(){
 				esac
 				;;
 		*)
-			local ini_file_list=$(ls -ultF  "${SECONDS_INI_FILE_DIR_PATH}/" | sed 's/\*$//g' | grep -i ''${COMMAND_CLICK_EXTENSION}'' | awk '{print $9}' | sed -e 's/$/\t'${sed_dir_path}'/' -e '1i ['${display_sec_ini_path}']' -e 's/$/\t'${sed_dir_path}'/')
+			local ini_file_list=$(ls -t "${SECONDS_INI_FILE_DIR_PATH}/" | sed 's/\*$//g' | grep -i ''${COMMAND_CLICK_EXTENSION}'' | sed -e 's/$/\t'${sed_dir_path}'/' -e '1i ['${display_sec_ini_path}']' -e 's/$/\t'${sed_dir_path}'/')
 			case "${ini_file_list}" in
 				"")
 					local ini_file_list="$(cat <(echo "[${display_sec_ini_path}"]) <(echo "-") | sed 's/$/\t'${sed_dir_path}'/')"
@@ -25,7 +25,7 @@ reload_cmd(){
 			esac
 			echo "${ini_file_list}"
 	esac
-	touch "${SECONDS_INI_FILE_DIR_PATH}"
+	touch "${SECONDS_INI_FILE_DIR_PATH}" &
 }
 
 exec_inc(){
@@ -48,18 +48,6 @@ exec_dec(){
 
 
 input_cmd_index(){
-	#boxsize global pre culc
-	SETTING_SOURCE=$(cat "${CMDCLICKL_SETTUING_FILE_PATH}")	
-	local width=$(echo "${SETTING_SOURCE}" | grep -i "${CMDCLICK_SETTING_ITEM_WODTH}=" | sed 's/'${CMDCLICK_SETTING_ITEM_WODTH}'\=//g')
-	local height=$(echo "${SETTING_SOURCE}" | grep -i "${CMDCLICK_SETTING_ITEM_HEIGHT}=" | sed 's/'${CMDCLICK_SETTING_ITEM_HEIGHT}'\=//g')
-	case "${height}" in 
-		"") height=$(((${width} * 9) / 16)) ;;
-	esac
-	local x_posi=$((${width} / 10 ))
-	local y_posi=$(((${height} * 1) / 20))
-	local x_posi2=$((${width} - ${x_posi} ))
-	box_size=($((${width} - ${x_posi})) $((${height} - ${y_posi})) $((${height} - ${y_posi})))
-
 	#current dir info
 	local sed_home_path=$(echo "${HOME}" | sed 's/\//\\\//g')
 	if [ ! ${NORMAL_SIGNAL_CODE} -eq ${CHDIR_CODE} ];then
@@ -72,7 +60,7 @@ input_cmd_index(){
 	local sed_dir_path=$(echo "${1}" | sed 's/\//\\\//g')
 	case "${SIGNAL_CODE}" in 
 		"${DELETE_CODE}"|"${EDIT_CODE}")
-			local ini_file_list="$(ls -ultF  "${1}/" | sed 's/\*$//g' | grep -i ''${COMMAND_CLICK_EXTENSION}'' | awk '{print $9}' | sed '1i ['${display_sec_ini_path}']' | sed 's/$/\t'${sed_dir_path}'/' | grep -v "${CMDCLICK_EDIT_CMD}" | grep -v "${CMDCLICK_DELETE_CMD}" | grep -v "${CMDCLICK_CHANGE_DIR_CMD}" | grep -v "${CMDCLICK_RESOLUTION_CMD}" | grep -v "${CMDCLICK_ADD_CMD}")"
+			local ini_file_list="$(ls -t  "${1}/" | sed 's/\*$//g' | grep -i ''${COMMAND_CLICK_EXTENSION}'' | sed '1i ['${display_sec_ini_path}']' | sed 's/$/\t'${sed_dir_path}'/' | grep -v "${CMDCLICK_EDIT_CMD}" | grep -v "${CMDCLICK_DELETE_CMD}" | grep -v "${CMDCLICK_CHANGE_DIR_CMD}" | grep -v "${CMDCLICK_RESOLUTION_CMD}" | grep -v "${CMDCLICK_ADD_CMD}")"
 			case "${ini_file_list}" in
 				"") 
 					local ini_file_list="$(cat <(echo "[${display_sec_ini_path}"]) <(echo "-") | sed 's/$/\t'${sed_dir_path}'/')"
@@ -80,7 +68,7 @@ input_cmd_index(){
 			esac
 			;;
 		*)
-			local ini_file_list="$(ls -ultF  "${1}" | sed 's/\*$//g' | grep -i ''${COMMAND_CLICK_EXTENSION}'' | awk '{print $9}' | sed -e '1i ['${display_sec_ini_path}']' -e 's/$/\t'${sed_dir_path}'/')"
+			local ini_file_list="$(ls -t "${1}" | sed 's/\*$//g' | grep -i ''${COMMAND_CLICK_EXTENSION}'' | sed -e '1i ['${display_sec_ini_path}']' -e 's/$/\t'${sed_dir_path}'/')"
 			case "${ini_file_list}" in
 				"")
 					local ini_file_list="$(cat <(echo "[${display_sec_ini_path}"]) <(echo "-") | sed 's/$/\t'${sed_dir_path}'/')"
@@ -88,7 +76,6 @@ input_cmd_index(){
 			esac
 			;;
 	esac
-	local list_row_num=$(echo "${ini_file_list}" | wc -l)
 	set +ux
 	# lecho "ini_file_list: ${ini_file_list}"
 	# lecho "${EXECUTE_COMMAND}"
@@ -119,13 +106,12 @@ input_cmd_index(){
 			esac 
 			;;
 	esac
-	export CMDCLICK_CONF_DIR_PATH=${CMDCLICK_CONF_DIR_PATH}
-	# --header="### ${INDEX_TITLE_TEXT_MESSAGE} ###"  \
 	EXECUTE_COMMAND=""
 	EXEC_TERMINAL_FOCUS=""
 	wait
 	case "${1}" in 
 		"${CMDCLICK_CONF_DIR_PATH}")
+			echo -e "\033];Please Dir Cmd Click \007"
 		 	IFS=$'\t' read -r -a VALUE < <(
 		        echo "${ini_file_list}" | \
 			        fzf --delimiter $'\t' \
@@ -140,7 +126,7 @@ input_cmd_index(){
 			        	--bind "Alt-d:execute(echo \"${DELETE_CODE} {1} {2}\"  > '${CMDCLICK_PASTE_SIGNAL_FILE_PATH}')+abort" \
 			        	--preview 'echo $(head -100 {2}/{1} | sed '1d' | sed '1,/'CMD_VARIABLE_SECTION'/!d' | sed '/'CMD_VARIABLE_SECTION'/d')' \
 			        	--bind "#:preview:${CMDCLICK_EDITOR_CMD} {2}/{1}" \
-			        	--color 'info:#0750fa,hl+:#02ebc7,hl:#0750fa,header:#000000,gutter:#000000' \
+			        	--color 'info:#0750fa,hl+:#02ebc7,hl:#0750fa,gutter:#000000' \
 			        	--color 'marker:#0750fa,spinner:#0750fa,pointer:#4382f7,prompt:#000000' \
 			        	--preview-window top:1 \
 			    )
@@ -167,7 +153,7 @@ input_cmd_index(){
 			        	--bind "Alt-s:reload(export IMPORT_CMDCLICK_VAL=1 && . \"$(dirname $0)/exec_cmdclick.sh\" && . \"$(dirname $0)/lib/input_gui.sh\" && export SIGNAL_CODE=${SIGNAL_CODE} && exec_inc && reload_cmd)" \
 			        	--bind "Alt-z:reload(export IMPORT_CMDCLICK_VAL=1 && . \"$(dirname $0)/exec_cmdclick.sh\" && . \"$(dirname $0)/lib/input_gui.sh\" && export SIGNAL_CODE=${SIGNAL_CODE} && exec_dec && reload_cmd)" \
 			        	--bind "Alt-r:reload(export IMPORT_CMDCLICK_VAL=1 && . \"$(dirname $0)/exec_cmdclick.sh\" && . \"$(dirname $0)/lib/input_gui.sh\" && export SIGNAL_CODE=${SIGNAL_CODE} && reload_cmd)" \
-			        	--color 'info:#0750fa,hl+:#02ebc7,hl:#0750fa,header:#000000,gutter:#000000' \
+			        	--color 'info:#0750fa,hl+:#02ebc7,hl:#0750fa,gutter:#000000' \
 			        	--color 'marker:#0750fa,spinner:#0750fa,pointer:#4382f7,prompt:#121212' \
 			        	--bind "√:execute(echo {2}/{1} | tr -d '\n' | pbcopy)" \
 			        	--preview-window top:1 \
@@ -175,47 +161,38 @@ input_cmd_index(){
 			;;
 	esac	
 
-	# --color 'fg:#121212,fg+:#ddeeff,bg:#c7c7c7,preview-bg:#c7c7c7,border:#ffffff'\
-	# 		        	--color 'info:#0750fa,hl+:#02ebc7,hl:#0750fa,header:#000000,gutter:#000000' \
-	# 		        	--color 'marker:#0750fa,spinner:#0750fa,pointer:#4382f7,prompt:#121212' \
- 	local status_code=$?
- 	clear
- 	local hit_app_dir_file=$(rga --heading "${VALUE[1]}"  "${CMDCLICK_CONF_DIR_PATH}" | grep -B 1 "${CH_DIR_PATH}" | head -n 1)
+	local status_code=$?
+ 	clear &
+ 	local hit_app_dir_file=$(grep -r "${VALUE[1]}"  "${CMDCLICK_CONF_DIR_PATH}" | grep "${CH_DIR_PATH}" | sed 's/\:'${CH_DIR_PATH}'.*//')
  	# update app dir list order (recent used)
  	case "${hit_app_dir_file}" in 
  		"")
 			local rga_path1=$(echo "${VALUE[1]}" | sed 's/'${sed_home_path}'/\\$\\{HOME\\}/')
-			hit_app_dir_file=$(rga --heading "${rga_path1}" "${CMDCLICK_CONF_DIR_PATH}" | grep -B 1 "${CH_DIR_PATH}" | head -n 1)
+			hit_app_dir_file=$(grep -r "${rga_path1}"  "${CMDCLICK_CONF_DIR_PATH}" | grep "${CH_DIR_PATH}" | sed 's/\:'${CH_DIR_PATH}'.*//')
  			case "${hit_app_dir_file}" in
  				"") 
 					local rga_path2=$(echo "${VALUE[1]}"  | sed 's/'${sed_home_path}'/\\$HOME/')
-					hit_app_dir_file=$(rga --heading "${rga_path2}" "${CMDCLICK_CONF_DIR_PATH}" | grep -B 1 "${CH_DIR_PATH}" | head -n 1)
+					hit_app_dir_file=$(grep -r "${rga_path1}"  "${CMDCLICK_CONF_DIR_PATH}" | grep "${CH_DIR_PATH}" | sed 's/\:'${CH_DIR_PATH}'.*//')
 					;;
 			esac
 			;;
 	esac
 	if [ -e "${hit_app_dir_file}" ]; then 
-		touch "${hit_app_dir_file}"
-		echo "${GREP_INC_NUM}=1" > "${CMDCLICK_CONF_INC_CMD_PATH}"
+		touch "${hit_app_dir_file}" &
+		# echo "${GREP_INC_NUM}=1" > "${CMDCLICK_CONF_INC_CMD_PATH}" &
 	fi
  	# lecho "status_code: ${status_code}"
+ 	local return_value=${VALUE[0]}
+	INI_FILE_DIR_PATH=${VALUE[1]}
  	case "${status_code}" in 
  		"1") 
 			local status_list=($(cat "${CMDCLICK_PASTE_SIGNAL_FILE_PATH}"));
-			cp /dev/null "${CMDCLICK_PASTE_SIGNAL_FILE_PATH}";
+			INI_FILE_DIR_PATH=$(echo ${status_list[2]} | sed -e "s/^'//g" -e "s/'$//g")
+			cp /dev/null "${CMDCLICK_PASTE_SIGNAL_FILE_PATH}" &
 		;;
 	esac
 	# lecho "status_list: "${status_list}
-	# lecho "ini_file_list: ${ini_file_list}"
-	local return_value=${VALUE[0]}
-	INI_FILE_DIR_PATH=${VALUE[1]}
-
-	case "${status_code}" in 
- 		"1") INI_FILE_DIR_PATH=$(echo ${status_list[2]} | sed -e "s/^'//g" -e "s/'$//g")
-			;;
-	esac
-	# if [ ${status_code} -eq 1 ];then INI_FILE_DIR_PATH=$(echo ${status_list[2]} | sed "s/\'//g");fi
-	
+	# lecho "ini_file_list: ${ini_file_list}"	
 	# lecho "${VALUE[@]}"
 	# lecho "INI_FILE_DIR_PATH: ${INI_FILE_DIR_PATH}"
 	# lecho "return_value ${return_value}"
@@ -223,9 +200,8 @@ input_cmd_index(){
 	# lecho "echo ${return_value} | grep ${CMDCLICK_EDIT_CMD}"
 	# lecho "return_value: ${return_value}"	
 	# alter SIGNAL_CODE to return_value 
-	local add_on=$(echo "${return_value}" | grep -i "${CMDCLICK_ADD_CMD}")
-	local delete_on=$(echo "${return_value}" | grep -i "${CMDCLICK_DELETE_CMD}")
-	local edit_on=$(echo "${return_value}" | grep -i "${CMDCLICK_EDIT_CMD}")
+	#on_sign=$(echo "${return_value}" | grep -o -e "${CMDCLICK_ADD_CMD}" -e "${CMDCLICK_DELETE_CMD}" -e "${CMDCLICK_EDIT_CMD}" -e "${CMDCLICK_CHANGE_DIR_CMD}")
+	#echo ${on_sign}
 	local cd_dir_on=$(echo "${return_value}" | grep -i "${CMDCLICK_CHANGE_DIR_CMD}")
 	#resolution_on=$(echo "${return_value[@]}" | grep "${CMDCLICK_RESOLUTION_CMD}")
 	# lecho "${return_value} grep ${CMDCLICK_CHANGE_DIR_CMD}"
@@ -237,11 +213,8 @@ input_cmd_index(){
 			SIGNAL_CODE=${EXIT_CODE}
 			;;
 		*)
-			if [ -z "${add_on}" ] && [ -z "${delete_on}" ] && [ -z "${edit_on}" ] && [ -z "${cd_dir_on}" ] && [ -z "${resolution_on}" ];then SIGNAL_CODE=${OK_CODE};
-			elif [ -n "${add_on}" ] ;then SIGNAL_CODE=${ADD_CODE}; 
+			if  [ -z "${cd_dir_on}" ] ;then SIGNAL_CODE=${OK_CODE};
 			elif [ -n "${cd_dir_on}" ];then SIGNAL_CODE=${CHDIR_CODE};
-			elif [ -n "${delete_on}" ];then SIGNAL_CODE=${DELETE_CODE};
-			elif [ -n "${edit_on}" ];then SIGNAL_CODE=${EDIT_CODE};
 			#elif [ -n "${resolution_on}" ];then SIGNAL_CODE=${RESOLUTION_CODE};
 			else SIGNAL_CODE=${INDEX_CODE}; fi
 		;;

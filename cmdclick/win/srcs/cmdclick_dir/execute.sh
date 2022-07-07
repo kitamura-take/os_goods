@@ -8,7 +8,7 @@ check_ini_file "${EXECUTE_FILE_PATH}"
 # lecho "${EXECUTE_FILE_PATH}"
 case "${SIGNAL_CODE}" in
 	"${OK_CODE}")
-		touch "${EXECUTE_FILE_PATH}"
+		touch "${EXECUTE_FILE_PATH}" &
 		EXEC_INPUT_EXECUTE="$(cat "${EXECUTE_FILE_PATH}" | grep "${INI_INPUT_EXECUTE}=" | sed 's/'${INI_INPUT_EXECUTE}'\=//')"
 		case "${EXEC_INPUT_EXECUTE}" in 
 			"C")
@@ -32,32 +32,6 @@ case "${SIGNAL_CODE}" in
 		esac 
 		;;
 esac
-# case "${SIGNAL_CODE}" in
-# 	"${OK_CODE}") 
-# 		touch "${EXECUTE_FILE_PATH}"
-# 		EXEC_INPUT_EXECUTE="$(cat "${EXECUTE_FILE_PATH}" | grep "${INI_INPUT_EXECUTE}=" | sed 's/'${INI_INPUT_EXECUTE}'\=//')"
-# 		case "${EXEC_INPUT_EXECUTE}" in 
-# 			"C")
-# 				center_box &
-# 				EXEC_IN_EXE_DFLT_VL="$(cat "${EXECUTE_FILE_PATH}" | grep "${INI_IN_EXE_DFLT_VL}=" | sed  -e 's/'${INI_INPUT_EXECUTE}'\=//'  | sed  -re "s/([a-zA-Z0-9_-]{1,100})=(.*)/\2/" | sed -e 's/"$//' -e 's/^"//' | tr ',' '\n'  | sed -e 's/\\$//' -e 's/^\s*//' | sed  -r "s/(^[a-zA-Z0-9_-]{0,100})(\:CB)=(.*)/ \| sed 's\/^\1=.*\/\1\2=\3\/'/" | sed  -r "s/(^[a-zA-Z0-9_-]{0,100})=(.*)/ \| sed 's\/^\1=.*\/\1=\2\/'/"  | tr -d '\n' | sed '/^$/d'  | sed 's/ | sed /\n | sed /g' | grep "[' ]$" | tr -d '\n')"
-# 				# echo "${EXEC_IN_EXE_DFLT_VL}"
-				
-# 				edit_ini_gui "${EXECUTE_FILE_NAME}";wait 
-# 				check_ini_file "${EXECUTE_FILE_PATH}"
-# 				;;
-# 			"E")
-# 				center_box &
-# 				EDIT_EDITOR_ON="ON"
-# 				edit_ini_gui "${EXECUTE_FILE_NAME}"; wait 
-# 				check_ini_file "${EXECUTE_FILE_PATH}"
-# 				;;
-# 		esac
-# 		case "${SIGNAL_CODE}" in
-# 			"${OK_CODE}")
-# 			read_ini_to_execute_command "${EXECUTE_FILE_PATH}" ;;
-# 		esac 
-# 		;;
-# esac
 # echo "BEFORE_EXECUTE setting_variable "
 # echo "${EXECUTE_COMMAND}"
 # echo "${EXEC_TERMINAL_ON}"

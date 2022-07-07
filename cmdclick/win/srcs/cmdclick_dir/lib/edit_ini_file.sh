@@ -13,7 +13,7 @@ edit_ini_gui(){
       ini_contents_moto=$(echo "${ini_contents_moto}" | sed -r 's/('${INI_CMD_FILE_NAME}')=.*/\1='${EDIT_FILE_NAME}'/')
     elif [ ${roop_num} -ge 2 ];then
       # lecho "edit_ini_gui: ini_contents: ${ini_contents}" 
-      local ini_contents_moto=$(echo "${ini_contents}");
+      local ini_contents_moto="${ini_contents}"
     fi
     # lecho  "ini_contents:edit:0.3: ${ini_contents}"
     make_ini_contensts "${ini_contents_moto}"

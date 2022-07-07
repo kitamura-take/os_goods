@@ -19,7 +19,7 @@ check_ini_file(){
 	case "${rewrite}" in 
 		"no")
 		    # lecho "ini_contents ${ini_contents}"
-		    local get_cmd_sec_num=$(echo "${ini_contents}" | grep -e "${SEARCH_INI_CMD_VARIABLE_SECTION_START_NAME}" -e "${SEARCH_INI_CMD_VARIABLE_SECTION_END_NAME}" | wc -l | tr -d ' ')
+		    local get_cmd_sec_num=$(echo "${ini_contents}" | grep -e "${SEARCH_INI_CMD_VARIABLE_SECTION_START_NAME}" -e "${SEARCH_INI_CMD_VARIABLE_SECTION_END_NAME}" | wc -l)
 		    case "${get_cmd_sec_num}" in 
 		    	"2");;
 				*) 
@@ -33,7 +33,7 @@ check_ini_file(){
 					
 			esac
 
-			local get_cmd_sec_uniq_num=$(echo "${ini_contents}" | grep -e "${SEARCH_INI_CMD_VARIABLE_SECTION_START_NAME}$" -e "${SEARCH_INI_CMD_VARIABLE_SECTION_END_NAME}$" | uniq | wc -l | tr -d ' ')
+			local get_cmd_sec_uniq_num=$(echo "${ini_contents}" | grep -e "${SEARCH_INI_CMD_VARIABLE_SECTION_START_NAME}$" -e "${SEARCH_INI_CMD_VARIABLE_SECTION_END_NAME}$" | uniq | wc -l)
 			case "${get_cmd_sec_num}" in 
 		    	"2");;
 				*) 
@@ -47,7 +47,7 @@ check_ini_file(){
 					
 			esac
 
-			local get_set_sec_num=$(echo "${ini_contents}" | grep -e "${SEARCH_INI_SETTING_SECTION_START_NAME}" -e "${SEARCH_INI_SETTING_SECTION_END_NAME}" | wc -l | tr -d ' ')
+			local get_set_sec_num=$(echo "${ini_contents}" | grep -e "${SEARCH_INI_SETTING_SECTION_START_NAME}" -e "${SEARCH_INI_SETTING_SECTION_END_NAME}" | wc -l)
 			case "${get_set_sec_num}" in 
 		    	"2");;
 				*) 
@@ -60,7 +60,7 @@ check_ini_file(){
 					esac 
 			esac
 
-		    local get_set_sec_uniq_num=$(echo "${ini_contents}" | grep -e "${SEARCH_INI_SETTING_SECTION_START_NAME}$" -e "${SEARCH_INI_SETTING_SECTION_END_NAME}$" | uniq | wc -l | tr -d ' ')
+		    local get_set_sec_uniq_num=$(echo "${ini_contents}" | grep -e "${SEARCH_INI_SETTING_SECTION_START_NAME}$" -e "${SEARCH_INI_SETTING_SECTION_END_NAME}$" | uniq | wc -l)
 		    case "${get_set_sec_uniq_num}" in 
 		    	"2");;
 				*) 
@@ -83,13 +83,6 @@ check_ini_file(){
 	esac
 	# lecho "rewrite: ${rewrite}"
 	# lecho "validate_err_message: ${validate_err_message}"
-	case "${1}" in 
-		"${INI_FILE_DIR_PATH}/")
-			rewrite="no"
-			SIGNAL_CODE=${INDEX_CODE}
-			;;
-	esac
-
 	case "${rewrite}" in 
 		"yes")
 			center_box &
@@ -103,8 +96,9 @@ check_ini_file(){
 					;;
 			esac
 			# lecho "${check_message}"
+			wait
 			dialog --title "${WINDOW_TITLE}"  --no-shadow --msgbox "${check_message}" "${INFO_BOX_DEFAULT_SIZE[@]}"
-			clear
+			clear &
 			SIGNAL_CODE=${CHECK_ERR_CODE}
 			# lecho SIGNAL_CODE
 			;;

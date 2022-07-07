@@ -90,7 +90,8 @@ confirm_edit_contensts(){
   2>&1 1>&3)
   # close fd
   exec 3>&-
-  clear
-  if [ -n "${VALUE}" ];then CONFIRM=0;
-  else CONFIRM=1;fi
+  clear &
+  case "${VALUE}" in 
+    "") CONFIRM=1 ;;
+    *) CONFIRM=0 ;; esac
 }
