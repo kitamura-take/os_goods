@@ -48,6 +48,7 @@ DIFBK_BK_CMD_VALIABLE="bk"
 DIFBK_LRS_CMD_VALIABLE="lrs"
 DIFBK_RS_CMD_VALIABLE="rs"
 DIFBK_CLEAN_CMD_VALIABLE="clean"
+DIFBK_MRG_CMD_VALIABLE="mrg"
 DIFBK_HELP_CMD_VALIABLE="help"
 BUCKUP_DEBUG=0
 export BUCKUP_DEBUG=${BUCKUP_DEBUG}
@@ -371,6 +372,8 @@ case "${DIFB_SUBCMD_INCLUDE_EJECT}" in
 		. ${DIFBK_DIR_PATH}/exec_dfbk_lrs.sh ;;
 	"${DIFBK_HELP_CMD_VALIABLE}") 
 		LANG="ja_JP.UTF-8" . ${DIFBK_DIR_PATH}/exec_dfbk_help.sh ;;
+	"${DIFBK_MRG_CMD_VALIABLE}") 
+		. ${DIFBK_DIR_PATH}/exec_dfbk_mrg.sh ;;
 	esac
 	;;
 esac
