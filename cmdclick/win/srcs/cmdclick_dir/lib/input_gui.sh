@@ -48,18 +48,6 @@ exec_dec(){
 
 
 input_cmd_index(){
-	#boxsize global pre culc
-	SETTING_SOURCE=$(cat "${CMDCLICKL_SETTUING_FILE_PATH}")	
-	local width=$(echo "${SETTING_SOURCE}" | grep -i "${CMDCLICK_SETTING_ITEM_WODTH}=" | sed 's/'${CMDCLICK_SETTING_ITEM_WODTH}'\=//g')
-	local height=$(echo "${SETTING_SOURCE}" | grep -i "${CMDCLICK_SETTING_ITEM_HEIGHT}=" | sed 's/'${CMDCLICK_SETTING_ITEM_HEIGHT}'\=//g')
-	case "${height}" in 
-		"") height=$(((${width} * 9) / 16)) ;;
-	esac
-	local x_posi=$((${width} / 10 ))
-	local y_posi=$(((${height} * 1) / 20))
-	local x_posi2=$((${width} - ${x_posi} ))
-	box_size=($((${width} - ${x_posi})) $((${height} - ${y_posi})) $((${height} - ${y_posi})))
-
 	#current dir info
 	local sed_home_path=$(echo "${HOME}" | sed 's/\//\\\//g')
 	if [ ! ${NORMAL_SIGNAL_CODE} -eq ${CHDIR_CODE} ];then
@@ -88,7 +76,6 @@ input_cmd_index(){
 			esac
 			;;
 	esac
-	local list_row_num=$(echo "${ini_file_list}" | wc -l)
 	set +ux
 	# lecho "ini_file_list: ${ini_file_list}"
 	# lecho "${EXECUTE_COMMAND}"
@@ -119,8 +106,6 @@ input_cmd_index(){
 			esac 
 			;;
 	esac
-	export CMDCLICK_CONF_DIR_PATH=${CMDCLICK_CONF_DIR_PATH}
-	# --header="### ${INDEX_TITLE_TEXT_MESSAGE} ###"  \
 	EXECUTE_COMMAND=""
 	EXEC_TERMINAL_FOCUS=""
 	wait
@@ -194,26 +179,20 @@ input_cmd_index(){
 	esac
 	if [ -e "${hit_app_dir_file}" ]; then 
 		touch "${hit_app_dir_file}" &
-		echo "${GREP_INC_NUM}=1" > "${CMDCLICK_CONF_INC_CMD_PATH}"
+		# echo "${GREP_INC_NUM}=1" > "${CMDCLICK_CONF_INC_CMD_PATH}" &
 	fi
  	# lecho "status_code: ${status_code}"
+ 	local return_value=${VALUE[0]}
+	INI_FILE_DIR_PATH=${VALUE[1]}
  	case "${status_code}" in 
  		"1") 
 			local status_list=($(cat "${CMDCLICK_PASTE_SIGNAL_FILE_PATH}"));
-			cp /dev/null "${CMDCLICK_PASTE_SIGNAL_FILE_PATH}";
+			INI_FILE_DIR_PATH=$(echo ${status_list[2]} | sed -e "s/^'//g" -e "s/'$//g")
+			cp /dev/null "${CMDCLICK_PASTE_SIGNAL_FILE_PATH}" &
 		;;
 	esac
 	# lecho "status_list: "${status_list}
-	# lecho "ini_file_list: ${ini_file_list}"
-	local return_value=${VALUE[0]}
-	INI_FILE_DIR_PATH=${VALUE[1]}
-
-	case "${status_code}" in 
- 		"1") INI_FILE_DIR_PATH=$(echo ${status_list[2]} | sed -e "s/^'//g" -e "s/'$//g")
-			;;
-	esac
-	# if [ ${status_code} -eq 1 ];then INI_FILE_DIR_PATH=$(echo ${status_list[2]} | sed "s/\'//g");fi
-	
+	# lecho "ini_file_list: ${ini_file_list}"	
 	# lecho "${VALUE[@]}"
 	# lecho "INI_FILE_DIR_PATH: ${INI_FILE_DIR_PATH}"
 	# lecho "return_value ${return_value}"
