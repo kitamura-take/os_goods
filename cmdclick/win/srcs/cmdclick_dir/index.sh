@@ -14,14 +14,9 @@ get_inc_dir_file &
 
 # lecho "BEFORE INDEX INDEX_CODE: ${INDEX_CODE}"
 LOOP=0
-cur_inc=$(cat "${CMDCLICK_CONF_INC_CMD_PATH}" 2>/dev/null | grep "^${GREP_INC_NUM}=" | sed 's/'${GREP_INC_NUM}'\=//' | sed '/^$/d')
-case "${cur_inc}" in 
-	"")
-
-		cur_inc=1
-		echo "${GREP_INC_NUM}=${cur_inc}" > "${CMDCLICK_CONF_INC_CMD_PATH}" &
-		;;
-esac 
+cur_inc=1
+echo "${GREP_INC_NUM}=${cur_inc}" > "${CMDCLICK_CONF_INC_CMD_PATH}" &
+wait
 SECONDS_INI_FILE_DIR_PATH=$(cat "${CMDCLICK_APP_LIST_PATH}" | sed -n ''${cur_inc}'p')
 if [ ! -e "${SECONDS_INI_FILE_DIR_PATH}" ];then 
 	INI_FILE_DIR_PATH="${CMDCLICK_DEFAULT_INI_FILE_DIR_PATH}";

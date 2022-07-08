@@ -145,8 +145,8 @@ input_cmd_index(){
 			        	--preview 'echo $(head -100 {2}/{1} | sed '1d' | sed 's/^#.*//' | sed "s/^[a-zA-Z0-9_-]\{1,100\}=.*//")' \
 			        	--bind "Alt-w:execute(start ${CMDCLICK_EDITOR_CMD} {2}/{1})" \
 			        	--bind "Alt-e:execute(echo \"${EDIT_CODE} {1} {2}\" > '${CMDCLICK_PASTE_SIGNAL_FILE_PATH}')+abort" \
-			        	--bind "Alt-x:reload(start wmctrl -a ${CMD_CLICK_TARGET_APP} && pbpaste > \"${CMDCLICK_PASTE_FILE_PATH}\" && echo 'bash ${CMDCLICK_MNT_PRFIX}{2}/{1}' | pbcopy && xdotool key '^v+{Enter}'  1>/dev/null 2>&1 && cat \"${CMDCLICK_PASTE_FILE_PATH}\" | pbcopy && nircmd win setsize process ${CMD_CLICK_SOURCE_APP}.exe ${CMCCLICL_RIGHT_SIZE} && start wmctrl -a ${CMD_CLICK_SOURCE_APP} && touch '${CMDCLICK_MNT_PRFIX}{2}/{1}' && export IMPORT_CMDCLICK_VAL=1 && . \"$(dirname $0)/exec_cmdclick.sh\" && . \"$(dirname $0)/lib/input_gui.sh\" && export SIGNAL_CODE=${SIGNAL_CODE} && reload_cmd)" \
-			        	--bind "Alt-X:reload(start wmctrl -a ${CMD_CLICK_TARGET_APP} && pbpaste > \"${CMDCLICK_PASTE_FILE_PATH}\" && echo 'source ${CMDCLICK_MNT_PRFIX}{2}/{1}' | pbcopy && xdotool key '^v+{Enter}'  1>/dev/null 2>&1 && cat \"${CMDCLICK_PASTE_FILE_PATH}\" | pbcopy && nircmd win setsize process ${CMD_CLICK_SOURCE_APP}.exe ${CMCCLICL_RIGHT_SIZE} && start wmctrl -a ${CMD_CLICK_SOURCE_APP} && touch '${CMDCLICK_MNT_PRFIX}{2}/{1}' && export IMPORT_CMDCLICK_VAL=1 && . \"$(dirname $0)/exec_cmdclick.sh\" && . \"$(dirname $0)/lib/input_gui.sh\" && export SIGNAL_CODE=${SIGNAL_CODE} && reload_cmd)" \
+			        	--bind "Alt-x:reload(start wmctrl -a ${CMD_CLICK_TARGET_APP} && pbpaste > \"${CMDCLICK_PASTE_FILE_PATH}\" && echo 'bash ${CMDCLICK_MNT_PRFIX}{2}/{1}' | pbcopy && xdotool key '^v+{Enter}'  1>/dev/null 2>&1 && cat \"${CMDCLICK_PASTE_FILE_PATH}\" | pbcopy && nircmd win setsize process ${CMD_CLICK_SOURCE_APP}.exe ${CMCCLICL_RIGHT_SIZE} && start wmctrl -a ${CMD_CLICK_SOURCE_APP} && touch '{2}/{1}' && export IMPORT_CMDCLICK_VAL=1 && . \"$(dirname $0)/exec_cmdclick.sh\" && . \"$(dirname $0)/lib/input_gui.sh\" && export SIGNAL_CODE=${SIGNAL_CODE} && reload_cmd)" \
+			        	--bind "Alt-X:reload(start wmctrl -a ${CMD_CLICK_TARGET_APP} && pbpaste > \"${CMDCLICK_PASTE_FILE_PATH}\" && echo 'source ${CMDCLICK_MNT_PRFIX}{2}/{1}' | pbcopy && xdotool key '^v+{Enter}'  1>/dev/null 2>&1 && cat \"${CMDCLICK_PASTE_FILE_PATH}\" | pbcopy && nircmd win setsize process ${CMD_CLICK_SOURCE_APP}.exe ${CMCCLICL_RIGHT_SIZE} && start wmctrl -a ${CMD_CLICK_SOURCE_APP} && touch '{2}/{1}' && export IMPORT_CMDCLICK_VAL=1 && . \"$(dirname $0)/exec_cmdclick.sh\" && . \"$(dirname $0)/lib/input_gui.sh\" && export SIGNAL_CODE=${SIGNAL_CODE} && reload_cmd)" \
 			        	--bind "Alt-a:execute(echo \"${ADD_CODE} {1} {2}\" > '${CMDCLICK_PASTE_SIGNAL_FILE_PATH}')+abort" \
 			        	--bind "Alt-d:execute(echo \"${DELETE_CODE} {1} {2}\" > '${CMDCLICK_PASTE_SIGNAL_FILE_PATH}')+abort" \
 			        	--bind "Alt-c:execute(echo \"${CHDIR_CODE} {1} {2}\" > '${CMDCLICK_PASTE_SIGNAL_FILE_PATH}')+abort" \
@@ -180,7 +180,6 @@ input_cmd_index(){
 	esac
 	if [ -e "${hit_app_dir_file}" ]; then 
 		touch "${hit_app_dir_file}" &
-		# echo "${GREP_INC_NUM}=1" > "${CMDCLICK_CONF_INC_CMD_PATH}" &
 	fi
  	# lecho "status_code: ${status_code}"
  	local return_value=${VALUE[0]}
@@ -247,4 +246,5 @@ input_cmd_index(){
 	EXEC_AFTER_COMMAND=""
 	EXEC_EXEC_WAKE=""
 	EDIT_EDITOR_ON=""
+	wait
 }
