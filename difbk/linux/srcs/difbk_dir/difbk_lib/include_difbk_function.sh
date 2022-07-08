@@ -1,5 +1,13 @@
 #!/bin/bash
 
+read_opt_val(){
+	echo "${1}" | grep "\-${2}" | sed -e 's/^\-'${2}'//' -e "s/'//g" | sed 's/^\s*//'
+}
+
+replace_desti_path(){
+	cat "/dev/stdin"  | sed -r "s/^(\/${BUCK_UP_DIR_NAME}\/[0-9]{4}\/[0-9]{2}\/[0-9]{2}\/[0-9]{4}\/${BACKUP_CREATE_DIR_NAME})\/${TARGET_DIR_NAME}/\1\/${1}/" | sed "s/\/\//\//g" | sed "s/^\/${BUCK_UP_DIR_NAME}/\/${2}/"
+}
+
 insert_row_path_from_contents(){
 	INSERTED_CONTENTS=""
 	sed_buck_up_create_dir_ralative_path=$(echo "${BUCK_UP_CREATE_DIR_RALATIVE_PATH}" | sed 's/\//\\\//g')

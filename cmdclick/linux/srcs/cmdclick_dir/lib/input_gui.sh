@@ -168,7 +168,7 @@ input_cmd_index(){
 							sleep 0.5 && wmctrl -i -a "${ccerminal_window_list}" &
 							;;
 						"OFF")
-							sleep 0.5 && xdotool key alt+Tab & 
+							sleep 1 && wmctrl -r "${WINDOW_TITLE}" -b toggle,hidden & #xdotool key alt+Tab & 
 							;;
 					esac
 				;;
