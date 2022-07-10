@@ -39,16 +39,21 @@ create_chdir_command_form(){
 			;;
 		"") ;;
 		*)
+			eval "echo \"${CREATE_CHDIR_PATH}\""
+			eval "echo \"${CREATE_CHDIR_PATH}\"" | rga "^/[a-zA-Z][a-zA-Z/._ -]*$"
 			local err_signal=""
-			case "$(eval "echo \"${CREATE_CHDIR_PATH}\"" | rga "^/[a-zA-Z][a-zA-Z/._ -]*$" || e=$?)" in
+			case "$(eval "echo \"${CREATE_CHDIR_PATH}\"" | rga "^/" || e=$?)" in
 				"") err_signal=1;;
 			esac
-			echo err_signal1 ${err_signal} 
+			# echo err_signal1 ${err_signal} 
 			case "$(eval "echo \"${CREATE_CHDIR_PATH}\"" | rga "[^a-zA-Z0-9/_-]"  || e=$?)" in
 				"") ;;
-				*) err_signal=1;;
+				*) 
+					case "$(eval "echo \"${CREATE_CHDIR_PATH}\"" | rga "[^\x01-\x7E]")" in 
+						"") err_signal=1;; esac
+					;;
 			esac 
-			echo err_signal2 ${err_signal}
+			# echo err_signal2 ${err_signal}
 			case "${err_signal}" in 
 				"1") 
 					disp_create_chdir_path=$(echo "${CREATE_CHDIR_PATH}" | sed -re 's/([^a-zA-Z0-9_])/\\\1/g' -e 's/\&/\&amp;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g' -e 's/"/\&quot;/g' -e "s/'/\&apos;/g")
