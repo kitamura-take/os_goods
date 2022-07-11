@@ -12,9 +12,11 @@ libinput-gestures-setup restart &
 echo 1621 | sudo -S updatedb
 STARTNUM=1
 if [ ${STARTNUM} = 1 ]; then
+  # nemo setting
+  # when starting terminal, warning stop
+  gsettings set org.nemo.desktop show-desktop-icons false
+  # default terminal emulator gnome terminal -> x-terminal
+  gsettings set org.cinnamon.desktop.default-applications.terminal exec x-terminal-emulator
   libinput-gestures-setup autostart &
-  curl https://sh.rustup.rs -sSf | sh -s -- -y
-  . $HOME/.cargo/env
-  cargo install sd
 fi
 sed -i "s|^STARTNUM=1$|STARTNUM=2|g" $0

@@ -72,6 +72,7 @@ SOURCE_IMAGES_WALLPAPERS_PATH="${SOURCE_IMAGES_PATH}/wallpapers"
 SOURCE_ICON_THEME_PATH="${SOURCE_DIR_FOLDA_PATH}/icon_theme"
 SOURCE_USRLOCALBIN_PATH="${SOURCE_DIR_FOLDA_PATH}/usrlocalbin"
 SOURCE_THEMES_PATH="${SOURCE_DIR_FOLDA_PATH}/themes"
+SOURCE_NEMO_ACTIONS_PATH="${SOURCE_DIR_FOLDA_PATH}/usr_shr_nemo_acts"
 
 TARGET_HOME_DIR_PATH="/home/${USER_NAME}"
 TARGET_CONFIG_PATH="${TARGET_HOME_DIR_PATH}/.config"
@@ -84,6 +85,7 @@ TARGET_BACKGROUNDS_PATH="/usr/share/backgrounds/"
 TARGET_ICON_THEME_PATH="/usr/share/icons"
 TARGET_USRLOCALBIN_PATH="/usr/local/bin"
 TARGET_NETPLAN_DIR_PATH="/etc/netplan"
+TARGET_NEMO_ACTIONS_PATH="/usr/share/nemo/actions"
 #壁紙名取得
 WALL_FILE_NAME=$(ls -l ${SOURCE_IMAGES_WALLPAPERS_PATH}  | tail -n 1 | awk '{print $9}')
 #ロゴファイル名取得
@@ -153,9 +155,11 @@ sudo apt install -y fcitx-config-gtk
 #yad:gtk shell library gdb:cのdebug tool nkf:shift-jis等変換 jq:json扱うツール
 # fd-find:high speed find  rcs:diff3,merge 
 # libgtk2.0-0:i386:haroopad require package
-sudo apt install -y pcmanfm xinput xinit nano synapse alacarte easystroke curl tlp tlp-rdw powertop git seahorse gnome-disk-utility xfce4-terminal xfce4-taskmanager dex snapd imwheel gufw xorgxrdp vino obconf numlockx samba gdebi gparted cifs-utils smbclient gnome-disk-utility wget mtools gimp file-roller lxpolkit mousepad lxinput catfish yad gdb thunar  thunar-archive-plugin nkf zip unzip rename lxc-utils jq openssh-client netdiscover fd-find colordiff rcs libgtk2.0-0:i386
+# nemo file-manager by nautilus folk(light weight)
+# commnt out thunar  thunar-archive-plugin
+sudo apt install -y pcmanfm xinput xinit nano synapse alacarte easystroke curl tlp tlp-rdw powertop git seahorse gnome-disk-utility xfce4-terminal xfce4-taskmanager dex snapd imwheel gufw xorgxrdp vino obconf numlockx samba gdebi gparted cifs-utils smbclient gnome-disk-utility wget mtools gimp file-roller lxpolkit mousepad lxinput catfish yad gdb nkf zip unzip rename lxc-utils jq openssh-client netdiscover fd-find colordiff rcs libgtk2.0-0:i386 nemo
 # install gh command
-curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null && sudo apt update && sudo apt install gh
+curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null && sudo apt update && sudo apt install -y gh
 # synblic link for fd
 sudo ln -s $(which fdfind) /usr/local/bin/fd
 # fzf install
@@ -326,6 +330,17 @@ if [ -z "${google_list_how}" ]; then
   sed -i '$ a xdotool windowactivate $WINDOWID' "${TARGET_HOME_DIR_PATH}/.bashrc"
 fi
 echo -----front_terminal_end
+# nemo actions setting
+echo "----nemo file manager setting_start"
+mkdir -p "${TARGET_NEMO_ACTIONS_PATH}"
+sudo cp -arvf "${SOURCE_NEMO_ACTIONS_PATH}"/* "${TARGET_NEMO_ACTIONS_PATH}"/
+sudo chmod +x -R "${TARGET_NEMO_ACTIONS_PATH}"
+nemo_gschrma_xml_name="org.nemo.gschema.xml"
+soruce_nemo_gschrma_xml_path="${SOURCE_FILES_DIR_PATH}/${nemo_gschrma_xml_name}"
+target_nemo_gschrma_xml_path="/usr/share/glib-2.0/schemas/${nemo_gschrma_xml_name}"
+sudo cp -arvf "${soruce_nemo_gschrma_xml_path}" "${target_nemo_gschrma_xml_path}"
+sudo chmod +x -R "${target_nemo_gschrma_xml_path}"
+echo "----nemo file manager setting_end"
 echo -----samba_settings_start
 ## samaba settings
 #samba共有ディレクトリ作成
