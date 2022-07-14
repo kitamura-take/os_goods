@@ -8,7 +8,10 @@ CMDCLICK_USE_SHELL='#!/bin/bash'
 CMDCLICL_MAXIMIZE_GEO="70 0 1530 900"
 CMCCLICL_RIGHT_SIZE="1100 130 510 780"
 box_size=(1230 730 730)
+
 CMDCLICK_LOG_ON=1
+SETTING_ELEMENT=("CMD_CLICK_TARGET_APP" "CMD_CLICK_SOURCE_APP" "CMDCLICK_EDITOR_CMD" "CMDCLICK_MNT_PRFIX" "CMDCLICK_USE_SHELL" "CMDCLICL_MAXIMIZE_GEO" "CMCCLICL_RIGHT_SIZE" "box_size")
+
 
 ITEM_THREAD="ITEM_THREAD_CM2GUI"
 WINDOW_TITLE="Command Click"
@@ -439,9 +442,33 @@ case  "${IMPORT_CMDCLICK_VAL}" in
 				add_chdir_cmd_ini_file "${CMDCLICK_DEFAULT_INI_FILE_DIR_PATH}"
 			fi
 			# lecho "SECONDS_INI_FILE_DIR_PATH:-1: ${SECONDS_INI_FILE_DIR_PATH}"
-			if [ ! -e "${CMDCLICKL_SETTUING_FILE_PATH}" ];then 
-				echo -e "${CMDCLICK_SETTING_ITEM_WODTH}=1366\n${CMDCLICK_SETTING_ITEM_HEIGHT}=" > "${CMDCLICKL_SETTUING_FILE_PATH}" & 
+			if [ ! -e "${CMDCLICKL_SETTUING_FILE_PATH}" ] || [ ! -s "${CMDCLICKL_SETTUING_FILE_PATH}" ];then 
+				local setting_source+="${SETTING_ELEMENT[0]}=WindowsTerminal"
+				setting_source+="\n${SETTING_ELEMENT[1]}=mintty"
+				setting_source+="\n${SETTING_ELEMENT[2]}=subl"
+				setting_source+="\n${SETTING_ELEMENT[3]}=/mnt"
+				setting_source+="\n${SETTING_ELEMENT[4]}=#!/bin/bash"
+				setting_source+="\n${SETTING_ELEMENT[5]}=70 0 1530 900"
+				setting_source+="\n# outdislay: 70 0 1530 900"
+				setting_source+="\n# innnerdisplay: 1100 130 510 780"
+				setting_source+="\n${SETTING_ELEMENT[6]}=1100 130 510 780"
+				setting_source+="\n# innerdisplay:outdisplay 900 130 480 640"
+				setting_source+="\n# outdisplay: 1400 330 520 770"
+				setting_source+="\n${SETTING_ELEMENT[7]}=1230 730 730"
+				setting_source=$(echo -e "${setting_source}")
+				echo -e "${setting_source}" > "${CMDCLICKL_SETTUING_FILE_PATH}" &
+			else 
+				local setting_source=$(cat "${CMDCLICKL_SETTUING_FILE_PATH}")
+				echo "${setting_source}" | grep -e "^${SETTING_ELEMENT[0]}" -e "^${SETTING_ELEMENT[1]}" -e "^${SETTING_ELEMENT[2]}" -e "^${SETTING_ELEMENT[3]}" -e "^${SETTING_ELEMENT[4]}" -e "^${SETTING_ELEMENT[5]}" -e "^${SETTING_ELEMENT[6]}"  -e "^${SETTING_ELEMENT[7]}" | sort | uniq | wc -l | [ ! $(cat) -eq 8 ] && echo "setting file manual repaer" && exit 0			 
 			fi
+			CMD_CLICK_TARGET_APP="$(echo "${setting_source}" | sed -n '/'${SETTING_ELEMENT[0]}'/p' | sed 's/'${SETTING_ELEMENT[0]}'=//')"
+			CMD_CLICK_SOURCE_APP="$(echo "${setting_source}"| sed -n '/'${SETTING_ELEMENT[1]}'/p' | sed 's/'${SETTING_ELEMENT[1]}'=//')"
+			CMDCLICK_EDITOR_CMD="$(echo "${setting_source}" | sed -n '/'${SETTING_ELEMENT[2]}'/p' | sed 's/'${SETTING_ELEMENT[2]}'=//')"
+			CMDCLICK_MNT_PRFIX="$(echo "${setting_source}" | sed -n '/'${SETTING_ELEMENT[3]}'/p' | sed 's/'${SETTING_ELEMENT[3]}'=//')"
+			CMDCLICK_USE_SHELL="$(echo "${setting_source}" | sed -n '/'${SETTING_ELEMENT[4]}'/p' | sed 's/'${SETTING_ELEMENT[4]}'=//')"
+			CMDCLICL_MAXIMIZE_GEO="$(echo "${setting_source}" | sed -n '/'${SETTING_ELEMENT[5]}'/p' | sed 's/'${SETTING_ELEMENT[5]}'=//')"
+			CMCCLICL_RIGHT_SIZE="$(echo "${setting_source}" | sed -n '/'${SETTING_ELEMENT[6]}'/p' | sed 's/'${SETTING_ELEMENT[6]}'=//')"
+			box_size=($(echo "${setting_source}" | sed -n '/'${SETTING_ELEMENT[7]}'/p' | sed 's/'${SETTING_ELEMENT[7]}'=//'))
 		}
 		init
 

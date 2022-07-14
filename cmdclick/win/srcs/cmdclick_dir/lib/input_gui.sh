@@ -142,7 +142,7 @@ input_cmd_index(){
 			        	--cycle \
 			        	--header-lines=1 \
 			        	--info=inline \
-			        	--preview 'echo $(head -100 {2}/{1} | sed '1d' | sed 's/^#.*//' | sed "s/^[a-zA-Z0-9_-]\{1,100\}=.*//")' \
+			        	--preview 'echo $(head -100 {2}/{1} | sed '1d' | sed 's/^#.*//' | sed "s/^[a-zA-Z0-9_-]\{1,100\}=.*//" | sed "s/[^\x01-\x7E]//g")' \
 			        	--bind "Alt-w:execute(start ${CMDCLICK_EDITOR_CMD} {2}/{1})" \
 			        	--bind "Alt-e:execute(echo \"${EDIT_CODE} {1} {2}\" > '${CMDCLICK_PASTE_SIGNAL_FILE_PATH}')+abort" \
 			        	--bind "Alt-x:reload(start wmctrl -a ${CMD_CLICK_TARGET_APP} && pbpaste > \"${CMDCLICK_PASTE_FILE_PATH}\" && echo 'bash ${CMDCLICK_MNT_PRFIX}{2}/{1}' | pbcopy && xdotool key '^v+{Enter}'  1>/dev/null 2>&1 && cat \"${CMDCLICK_PASTE_FILE_PATH}\" | pbcopy && nircmd win setsize process ${CMD_CLICK_SOURCE_APP}.exe ${CMCCLICL_RIGHT_SIZE} && start wmctrl -a ${CMD_CLICK_SOURCE_APP} && touch '{2}/{1}' && export IMPORT_CMDCLICK_VAL=1 && . \"$(dirname $0)/exec_cmdclick.sh\" && . \"$(dirname $0)/lib/input_gui.sh\" && export SIGNAL_CODE=${SIGNAL_CODE} && reload_cmd)" \
@@ -150,7 +150,7 @@ input_cmd_index(){
 			        	--bind "Alt-a:execute(echo \"${ADD_CODE} {1} {2}\" > '${CMDCLICK_PASTE_SIGNAL_FILE_PATH}')+abort" \
 			        	--bind "Alt-d:execute(echo \"${DELETE_CODE} {1} {2}\" > '${CMDCLICK_PASTE_SIGNAL_FILE_PATH}')+abort" \
 			        	--bind "Alt-c:execute(echo \"${CHDIR_CODE} {1} {2}\" > '${CMDCLICK_PASTE_SIGNAL_FILE_PATH}')+abort" \
-			        	--bind "©:execute(echo \"${RESOLUTION_CODE} {1} {2}\" > '${CMDCLICK_PASTE_SIGNAL_FILE_PATH}')+abort" \
+			        	--bind "Alt-g:execute(start ${CMDCLICK_EDITOR_CMD} '${CMDCLICKL_SETTUING_FILE_PATH}')" \
 			        	--bind "Alt-s:reload(export IMPORT_CMDCLICK_VAL=1 && . \"$(dirname $0)/exec_cmdclick.sh\" && . \"$(dirname $0)/lib/input_gui.sh\" && export SIGNAL_CODE=${SIGNAL_CODE} && exec_inc && reload_cmd)" \
 			        	--bind "Alt-z:reload(export IMPORT_CMDCLICK_VAL=1 && . \"$(dirname $0)/exec_cmdclick.sh\" && . \"$(dirname $0)/lib/input_gui.sh\" && export SIGNAL_CODE=${SIGNAL_CODE} && exec_dec && reload_cmd)" \
 			        	--bind "Alt-r:reload(export IMPORT_CMDCLICK_VAL=1 && . \"$(dirname $0)/exec_cmdclick.sh\" && . \"$(dirname $0)/lib/input_gui.sh\" && export SIGNAL_CODE=${SIGNAL_CODE} && reload_cmd)" \
