@@ -89,11 +89,12 @@ add_cmd_ini_file(){
 #コマンドをユーザー入力フォームで取得
 create_command_form(){
 	local display_rsolution=$(xrandr | grep '*' | awk '{print $1}')
-	# lecho ${display_rsolution}
+	# echo ${display_rsolution}
 	local display_rsolution_list=($(echo "${display_rsolution}" | sed -e 's|x| |g'))
-	# lecho ${display_rsolution_list[@]}
+	# echo ${display_rsolution_list[@]}
 	local scale_display_height=$(echo "scale=0; ${display_rsolution_list[1]} / 1.1" | bc)
 	local scale_display_width=$(echo "scale=0; ${display_rsolution_list[0]} / 1.9" | bc)
+	# echo ${scale_display_height} ${scale_display_width}
 	local temp_file_name="$(($RANDOM % 1000))${COMMAND_CLICK_EXTENSION}"
 	local temp_file_path="${INI_FILE_DIR_PATH}/${temp_file_name}"
 	local default_sh_con=$(cat <(echo "${CMDCLICK_USE_SHELL}") <(echo -e "") <(echo "${INI_SETTING_SECTION_START_NAME}")  <(echo "${INI_SETTING_DEFAULT_GAIN_CON}" | sed -r "s/(${INI_CMD_FILE_NAME}=)/\1${temp_file_name}/") <(echo "${INI_SETTING_SECTION_END_NAME}") <(echo -e "\n") <(echo "${INI_CMD_VARIABLE_SECTION_DEFAULT}")   <(echo -e "\n") <(echo "${SEARCH_INI_CMD_SECTION_START_NAME}") <(echo -e "\n "))
@@ -109,8 +110,7 @@ create_command_form(){
       --scroll \
       --height=${scale_display_height} \
       --width=${scale_display_width} \
-      --field="\n ${add_confirm} ? \n  ${EXECUTE_FILE_NAME} \n\n":LBL "" \
-      "${GEOMETRY}"
+      --field="\n ${add_confirm} ? \n  ${EXECUTE_FILE_NAME} \n\n":LBL ""
     local CONFIRM=$?
 	# echo CONFIRM ${CONFIRM}
 	case "${CONFIRM}" in 
