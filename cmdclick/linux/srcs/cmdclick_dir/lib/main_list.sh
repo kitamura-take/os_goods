@@ -50,7 +50,7 @@ case "${1}" in
                 	--bind "Alt-d:execute(echo \"${DELETE_CODE} {1} {2}\" > '${CMDCLICK_PASTE_SIGNAL_FILE_PATH}')+abort" \
                 	--bind "Alt-c:execute(echo \"${CHDIR_CODE} {1} {2}\" > '${CMDCLICK_PASTE_SIGNAL_FILE_PATH}')+abort" \
                 	--bind "Alt-s:reload(export IMPORT_CMDCLICK_VAL=1 && . ${import_path_exec_cmdclick} && . ${import_path_input_gui} && export SIGNAL_CODE=${SIGNAL_CODE} && exec_inc && reload_cmd)" \
-                	--bind "Alt-x:reload(export IMPORT_CMDCLICK_VAL=1 && . ${import_path_exec_cmdclick} && . ${import_path_input_gui} && export SIGNAL_CODE=${SIGNAL_CODE} && exec_dec && reload_cmd)" \
+                	--bind "Alt-S:reload(export IMPORT_CMDCLICK_VAL=1 && . ${import_path_exec_cmdclick} && . ${import_path_input_gui} && export SIGNAL_CODE=${SIGNAL_CODE} && exec_dec && reload_cmd)" \
                 	--bind "Alt-r:reload(export IMPORT_CMDCLICK_VAL=1 && . ${import_path_exec_cmdclick} && . ${import_path_input_gui} && export SIGNAL_CODE=${SIGNAL_CODE} && reload_cmd)" \
                 	--bind "alt-v:execute(echo {2}/{1} | tr -d '\n' | xclip -selection c -i)" \
                 	--color 'fg:#000000,fg+:#ddeeff,bg:#f2f2f2,preview-bg:#e6ffe6,border:#ffffff'\
