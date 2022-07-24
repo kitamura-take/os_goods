@@ -149,7 +149,7 @@ input_cmd_index(){
 			        	--bind "Alt-c:execute(echo \"${CHDIR_CODE} {1} {2}\" > '${CMDCLICK_PASTE_SIGNAL_FILE_PATH}')+abort" \
 			        	--bind "Alt-g:execute(open_editor '${CMDCLICKL_SETTUING_FILE_PATH}')" \
 			        	--bind "Alt-s:reload(export IMPORT_CMDCLICK_VAL=1 && . \"$(dirname $0)/exec_cmdclick.sh\" && . \"$(dirname $0)/lib/input_gui.sh\" && export SIGNAL_CODE=${SIGNAL_CODE} && exec_inc && reload_cmd)" \
-			        	--bind "Alt-z:reload(export IMPORT_CMDCLICK_VAL=1 && . \"$(dirname $0)/exec_cmdclick.sh\" && . \"$(dirname $0)/lib/input_gui.sh\" && export SIGNAL_CODE=${SIGNAL_CODE} && exec_dec && reload_cmd)" \
+			        	--bind "Alt-S:reload(export IMPORT_CMDCLICK_VAL=1 && . \"$(dirname $0)/exec_cmdclick.sh\" && . \"$(dirname $0)/lib/input_gui.sh\" && export SIGNAL_CODE=${SIGNAL_CODE} && exec_dec && reload_cmd)" \
 			        	--bind "Alt-r:reload(export IMPORT_CMDCLICK_VAL=1 && . \"$(dirname $0)/exec_cmdclick.sh\" && . \"$(dirname $0)/lib/input_gui.sh\" && export SIGNAL_CODE=${SIGNAL_CODE} && reload_cmd)" \
 			        	--color 'info:#0750fa,hl+:#02ebc7,hl:#0750fa,gutter:#000000' \
 			        	--color 'marker:#0750fa,spinner:#0750fa,pointer:#4382f7,prompt:#121212' \

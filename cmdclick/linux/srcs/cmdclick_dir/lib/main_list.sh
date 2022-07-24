@@ -43,14 +43,14 @@ case "${1}" in
                 	--cycle \
                 	--header-lines=1 \
                 	--info=inline \
-                	--preview 'echo $(head -100 {2}/{1} | sed '1d' | sed 's/^#.*//' | sed "s/^[a-zA-Z0-9_-]\{1,100\}=.*//")' \
+                	--preview 'echo $(head -100 {2}/{1} | sed '1d' | sed 's/^#.*//' | sed "s/^[a-zA-Z0-9_-]\{1,100\}=.*//" | sed "s/[^\x01-\x7E]//g")' \
                 	--bind "Alt-w:execute(${CMDCLICK_EDITOR_CMD} {2}/{1})" \
                 	--bind "Alt-e:execute(echo \"${EDIT_CODE} {1} {2}\" > '${CMDCLICK_PASTE_SIGNAL_FILE_PATH}')+abort" \
                 	--bind "Alt-a:execute(echo \"${ADD_CODE} {1} {2}\" > '${CMDCLICK_PASTE_SIGNAL_FILE_PATH}')+abort" \
                 	--bind "Alt-d:execute(echo \"${DELETE_CODE} {1} {2}\" > '${CMDCLICK_PASTE_SIGNAL_FILE_PATH}')+abort" \
                 	--bind "Alt-c:execute(echo \"${CHDIR_CODE} {1} {2}\" > '${CMDCLICK_PASTE_SIGNAL_FILE_PATH}')+abort" \
                 	--bind "Alt-s:reload(export IMPORT_CMDCLICK_VAL=1 && . ${import_path_exec_cmdclick} && . ${import_path_input_gui} && export SIGNAL_CODE=${SIGNAL_CODE} && exec_inc && reload_cmd)" \
-                	--bind "Alt-x:reload(export IMPORT_CMDCLICK_VAL=1 && . ${import_path_exec_cmdclick} && . ${import_path_input_gui} && export SIGNAL_CODE=${SIGNAL_CODE} && exec_dec && reload_cmd)" \
+                	--bind "Alt-S:reload(export IMPORT_CMDCLICK_VAL=1 && . ${import_path_exec_cmdclick} && . ${import_path_input_gui} && export SIGNAL_CODE=${SIGNAL_CODE} && exec_dec && reload_cmd)" \
                 	--bind "Alt-r:reload(export IMPORT_CMDCLICK_VAL=1 && . ${import_path_exec_cmdclick} && . ${import_path_input_gui} && export SIGNAL_CODE=${SIGNAL_CODE} && reload_cmd)" \
                 	--bind "alt-v:execute(echo {2}/{1} | tr -d '\n' | xclip -selection c -i)" \
                 	--color 'fg:#000000,fg+:#ddeeff,bg:#f2f2f2,preview-bg:#e6ffe6,border:#ffffff'\
