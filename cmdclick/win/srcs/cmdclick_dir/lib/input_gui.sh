@@ -111,8 +111,8 @@ input_cmd_index(){
 	wait
 	case "${1}" in 
 		"${CMDCLICK_CONF_DIR_PATH}")
-			echo -e "\033];Please Dir Cmd Click \007"
-		 	IFS=$'\t' read -r -a VALUE < <(
+			echo -e "\033];Please Dir ${WINDOW_TITLE} \007"
+		 	 LANG=ja_JP.utf8 IFS=$'\t' read -r -a VALUE < <(
 		        echo "${ini_file_list}" | \
 			        fzf --delimiter $'\t' \
 			        	--layout=reverse \
@@ -120,20 +120,19 @@ input_cmd_index(){
 			        	--with-nth 1 \
 			        	--cycle \
 			        	--header-lines=1 \
-			        	--bind "Alt-w:execute(${CMDCLICK_EDITOR_CMD} {2}/{1})" \
+			        	--bind "Alt-w:execute(open_editor '{2}/{1}')" \
 			        	--bind "Alt-e:execute(echo \"${EDIT_CODE} {1} {2}\"  > '${CMDCLICK_PASTE_SIGNAL_FILE_PATH}')+abort" \
 			        	--bind "Alt-a:execute(echo \"${ADD_CODE} {1} {2}\"  > '${CMDCLICK_PASTE_SIGNAL_FILE_PATH}')+abort" \
 			        	--bind "Alt-d:execute(echo \"${DELETE_CODE} {1} {2}\"  > '${CMDCLICK_PASTE_SIGNAL_FILE_PATH}')+abort" \
 			        	--preview 'echo $(head -100 {2}/{1} | sed '1d' | sed '1,/'CMD_VARIABLE_SECTION'/!d' | sed '/'CMD_VARIABLE_SECTION'/d')' \
-			        	--bind "#:preview:${CMDCLICK_EDITOR_CMD} {2}/{1}" \
 			        	--color 'info:#0750fa,hl+:#02ebc7,hl:#0750fa,gutter:#000000' \
 			        	--color 'marker:#0750fa,spinner:#0750fa,pointer:#4382f7,prompt:#000000' \
 			        	--preview-window top:1 \
 			    )
 			;;
 		*)
-			echo -e "\033];Please Cmd Click \007"
-			IFS=$'\t' read -r -a VALUE < <(
+			echo -e "\033];Please ${WINDOW_TITLE} \007"
+			LANG=ja_JP.utf8 IFS=$'\t' read -r -a VALUE < <(
 		        echo "${ini_file_list}" | \
 			        fzf --delimiter $'\t' \
 			        	--layout=reverse \
@@ -142,21 +141,19 @@ input_cmd_index(){
 			        	--cycle \
 			        	--header-lines=1 \
 			        	--info=inline \
-			        	--preview 'echo $(head -100 {2}/{1} | sed '1d' | sed 's/^#.*//' | sed "s/^[a-zA-Z0-9_-]\{1,100\}=.*//")' \
-			        	--bind "Alt-w:execute(start ${CMDCLICK_EDITOR_CMD} {2}/{1})" \
+			        	--preview 'echo $(head -100 {2}/{1} | sed '1d' | sed 's/^#.*//' | sed "s/^[a-zA-Z0-9_-]\{1,100\}=.*//" | sed "s/[^\x01-\x7E]//g")' \
+			        	--bind "Alt-w:execute(open_editor '{2}/{1}')" \
 			        	--bind "Alt-e:execute(echo \"${EDIT_CODE} {1} {2}\" > '${CMDCLICK_PASTE_SIGNAL_FILE_PATH}')+abort" \
-			        	--bind "Alt-x:reload(start wmctrl -a ${CMD_CLICK_TARGET_APP} && pbpaste > \"${CMDCLICK_PASTE_FILE_PATH}\" && echo 'bash ${CMDCLICK_MNT_PRFIX}{2}/{1}' | pbcopy && xdotool key '^v+{Enter}'  1>/dev/null 2>&1 && cat \"${CMDCLICK_PASTE_FILE_PATH}\" | pbcopy && nircmd win setsize process ${CMD_CLICK_SOURCE_APP}.exe ${CMCCLICL_RIGHT_SIZE} && start wmctrl -a ${CMD_CLICK_SOURCE_APP} && touch '{2}/{1}' && export IMPORT_CMDCLICK_VAL=1 && . \"$(dirname $0)/exec_cmdclick.sh\" && . \"$(dirname $0)/lib/input_gui.sh\" && export SIGNAL_CODE=${SIGNAL_CODE} && reload_cmd)" \
-			        	--bind "Alt-X:reload(start wmctrl -a ${CMD_CLICK_TARGET_APP} && pbpaste > \"${CMDCLICK_PASTE_FILE_PATH}\" && echo 'source ${CMDCLICK_MNT_PRFIX}{2}/{1}' | pbcopy && xdotool key '^v+{Enter}'  1>/dev/null 2>&1 && cat \"${CMDCLICK_PASTE_FILE_PATH}\" | pbcopy && nircmd win setsize process ${CMD_CLICK_SOURCE_APP}.exe ${CMCCLICL_RIGHT_SIZE} && start wmctrl -a ${CMD_CLICK_SOURCE_APP} && touch '{2}/{1}' && export IMPORT_CMDCLICK_VAL=1 && . \"$(dirname $0)/exec_cmdclick.sh\" && . \"$(dirname $0)/lib/input_gui.sh\" && export SIGNAL_CODE=${SIGNAL_CODE} && reload_cmd)" \
 			        	--bind "Alt-a:execute(echo \"${ADD_CODE} {1} {2}\" > '${CMDCLICK_PASTE_SIGNAL_FILE_PATH}')+abort" \
 			        	--bind "Alt-d:execute(echo \"${DELETE_CODE} {1} {2}\" > '${CMDCLICK_PASTE_SIGNAL_FILE_PATH}')+abort" \
 			        	--bind "Alt-c:execute(echo \"${CHDIR_CODE} {1} {2}\" > '${CMDCLICK_PASTE_SIGNAL_FILE_PATH}')+abort" \
-			        	--bind "©:execute(echo \"${RESOLUTION_CODE} {1} {2}\" > '${CMDCLICK_PASTE_SIGNAL_FILE_PATH}')+abort" \
+			        	--bind "Alt-g:execute(open_editor '${CMDCLICKL_SETTUING_FILE_PATH}')" \
 			        	--bind "Alt-s:reload(export IMPORT_CMDCLICK_VAL=1 && . \"$(dirname $0)/exec_cmdclick.sh\" && . \"$(dirname $0)/lib/input_gui.sh\" && export SIGNAL_CODE=${SIGNAL_CODE} && exec_inc && reload_cmd)" \
 			        	--bind "Alt-z:reload(export IMPORT_CMDCLICK_VAL=1 && . \"$(dirname $0)/exec_cmdclick.sh\" && . \"$(dirname $0)/lib/input_gui.sh\" && export SIGNAL_CODE=${SIGNAL_CODE} && exec_dec && reload_cmd)" \
 			        	--bind "Alt-r:reload(export IMPORT_CMDCLICK_VAL=1 && . \"$(dirname $0)/exec_cmdclick.sh\" && . \"$(dirname $0)/lib/input_gui.sh\" && export SIGNAL_CODE=${SIGNAL_CODE} && reload_cmd)" \
 			        	--color 'info:#0750fa,hl+:#02ebc7,hl:#0750fa,gutter:#000000' \
 			        	--color 'marker:#0750fa,spinner:#0750fa,pointer:#4382f7,prompt:#121212' \
-			        	--bind "Alt-v:execute(echo {2}/{1} | tr -d '\n' | pbcopy)" \
+			        	--bind "Alt-v:execute(echo {2}/{1} | tr -d '\n' | pbcopy.exe)" \
 			        	--preview-window top:1 \
 			    )
 			;;
@@ -203,7 +200,7 @@ input_cmd_index(){
 	#on_sign=$(echo "${return_value}" | grep -o -e "${CMDCLICK_ADD_CMD}" -e "${CMDCLICK_DELETE_CMD}" -e "${CMDCLICK_EDIT_CMD}" -e "${CMDCLICK_CHANGE_DIR_CMD}")
 	#echo ${on_sign}
 	local cd_dir_on=$(echo "${return_value}" | grep -i "${CMDCLICK_CHANGE_DIR_CMD}")
-	#resolution_on=$(echo "${return_value[@]}" | grep "${CMDCLICK_RESOLUTION_CMD}")
+	# local resolution_on=$(echo "${return_value[@]}" | grep "${CMDCLICK_RESOLUTION_CMD}")
 	# lecho "${return_value} grep ${CMDCLICK_CHANGE_DIR_CMD}"
 	# lecho "cd_dir_on: ${cd_dir_on}"
 	# lecho "add: ${add_on}"
@@ -215,7 +212,7 @@ input_cmd_index(){
 		*)
 			if  [ -z "${cd_dir_on}" ] ;then SIGNAL_CODE=${OK_CODE};
 			elif [ -n "${cd_dir_on}" ];then SIGNAL_CODE=${CHDIR_CODE};
-			#elif [ -n "${resolution_on}" ];then SIGNAL_CODE=${RESOLUTION_CODE};
+			elif [ -n "${resolution_on}" ];then SIGNAL_CODE=${RESOLUTION_CODE};
 			else SIGNAL_CODE=${INDEX_CODE}; fi
 		;;
 	esac
@@ -246,5 +243,4 @@ input_cmd_index(){
 	EXEC_AFTER_COMMAND=""
 	EXEC_EXEC_WAKE=""
 	EDIT_EDITOR_ON=""
-	wait
 }

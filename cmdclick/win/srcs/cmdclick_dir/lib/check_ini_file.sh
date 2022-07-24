@@ -74,7 +74,7 @@ check_ini_file(){
 			esac
 			local validate_source_con=$(cat <(echo "${ini_contents}" | sed -n '/'${SEARCH_INI_CMD_VARIABLE_SECTION_START_NAME}'/,/'${SEARCH_INI_CMD_VARIABLE_SECTION_END_NAME}'/p' | sed '/'${SEARCH_INI_CMD_VARIABLE_SECTION_START_NAME}'/d' | sed '/'${SEARCH_INI_CMD_VARIABLE_SECTION_END_NAME}'/d' | grep "^[a-zA-Z0-9_-]\{1,100\}=") <(echo "${ini_contents}" | sed -n '/'${SEARCH_INI_SETTING_SECTION_START_NAME}'/,/'${SEARCH_INI_SETTING_SECTION_END_NAME}'/p' | sed '/'${SEARCH_INI_SETTING_SECTION_START_NAME}'/d' | sed '/'${SEARCH_INI_SETTING_SECTION_END_NAME}'/d' | grep "^[a-zA-Z0-9_-]\{1,100\}=")  | sed '/^$/d' )
 
-			local get_blank_no_include_quote_err=$(echo "${validate_source_con}" | grep "\s" | grep -e "^[a-zA-Z0-9_-]{1,100}=[^\"']" -e "[^\"']$")
+			local get_blank_no_include_quote_err=$(echo "${validate_source_con}" | grep "\s" | grep -E -e "^[a-zA-Z0-9_-]{1,100}=[^\"']" -e "[^\"']$")
 			if [ -n "${get_blank_no_include_quote_err}"  ];then 
 				rewrite="yes"
 				local validate_err_message+="blank isn't included by quote, "

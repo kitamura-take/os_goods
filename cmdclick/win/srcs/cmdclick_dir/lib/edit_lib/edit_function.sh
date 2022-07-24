@@ -57,7 +57,7 @@ display_edit_contensts(){
   # close fd
   case "${EDIT_EDITOR_ON}" in 
     "ON")
-        ${CMDCLICK_EDITOR_CMD} ${EDIT_FILE_PATH}
+        open_editor "${EDIT_FILE_PATH}"
         local edit_message=$(cat <(echo "") <(echo "please edit bellow path:") <(echo "") <(echo -e "\t${EDIT_FILE_PATH}") <(echo ""))
         local edit_box_size[0]=$(echo "${box_size[0]}")
         local edit_box_size[1]=$(echo "${box_size[1]}")

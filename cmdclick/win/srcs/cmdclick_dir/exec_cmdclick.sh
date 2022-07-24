@@ -1,15 +1,5 @@
 #!/bin/bash
 
-CMD_CLICK_TARGET_APP="WindowsTerminal"
-CMD_CLICK_SOURCE_APP="mintty" #iTerm
-CMDCLICK_EDITOR_CMD="subl"
-CMDCLICK_MNT_PRFIX="/mnt"
-CMDCLICK_USE_SHELL='#!/bin/bash'
-CMDCLICL_MAXIMIZE_GEO="70 0 1530 900"
-CMCCLICL_RIGHT_SIZE="1100 130 510 780"
-box_size=(1230 730 730)
-CMDCLICK_LOG_ON=1
-
 ITEM_THREAD="ITEM_THREAD_CM2GUI"
 WINDOW_TITLE="Command Click"
 COMMAND_CLICK_EXTENSION='.sh'
@@ -56,6 +46,9 @@ CMDCLICK_SETTING_ITEM_WODTH="resolution_width"
 CMDCLICK_SETTING_ITEM_HEIGHT="resolution_height"
 GREP_SECONDS_INI_FILE_DIR_PATH="SECONDS_INI_FILE_DIR_PATH"
 GREP_INC_NUM="INC_NUM"
+
+CMDCLICK_LOG_ON=1
+SETTING_ELEMENT=("CMD_CLICK_TARGET_APP" "CMD_CLICK_SOURCE_APP" "CMDCLICK_EDITOR_CMD" "CMDCLICK_MNT_PRFIX" "CMDCLICK_USE_SHELL" "CMDCLICL_MAXIMIZE_GEO" "CMCCLICL_RIGHT_SIZE" "box_size")
 
 REWRITE="no"
 FILE_NAME_LENGH=45
@@ -213,98 +206,53 @@ case  "${IMPORT_CMDCLICK_VAL}" in
 		SIGNAL_CODE=${INDEX_CODE}
 		NORMAL_SIGNAL_CODE=${INDEX_CODE}
 		ACTIVE_CHECK_VARIABLE=0
-
+		resize_base_cmd(){
+			local size_list=($(echo "${1}"))
+			# echo size_list0 ${size_list[0]}
+			# echo size_list1 ${size_list[1]}
+			# echo size_list2 ${size_list[2]}
+			# echo size_list3 ${size_list[3]}
+			# sleep 10
+			powershell.exe -c '
+				$host.UI.RawUI.WindowTitle = "'${WINDOW_TITLE}'"
+				$MAIN_WINDOW_TITLE="*'${WINDOW_TITLE}'*"
+				Add-Type -AssemblyName UIAutomationClient
+				#Get-Processで取得できた1つ目のハンドルを対象とする。
+				$hwnd=(Get-Process |?{$_.MainWindowTitle -like $MAIN_WINDOW_TITLE})[0].MainWindowHandle
+				#ハンドルからウィンドウを取得する
+				$window=[System.Windows.Automation.AutomationElement]::FromHandle($hwnd)
+				#ウィンドウサイズの状態を把握するためにWindowPatternを使う
+				$windowPattern=$window.GetCurrentPattern([System.Windows.Automation.WindowPattern]::Pattern)
+				$windowPattern.SetWindowVisualState([System.Windows.Automation.WindowVisualState]::Normal)
+				#ウィンドウサイズを変更するためのﾊﾟﾀｰﾝ。
+				$transformPattern=$window.GetCurrentPattern([System.Windows.Automation.TransformPattern]::Pattern)
+				#Maximamだと移動もｻｲｽﾞ変更もできないので注意。
+				$transformPattern.Resize('${size_list[2]}','${size_list[3]}')
+				$transformPattern.Move('${size_list[0]}','${size_list[1]}')
+				'
+		}
 		right_box(){
-			nircmd win setsize process ${CMD_CLICK_SOURCE_APP}.exe ${CMCCLICL_RIGHT_SIZE}
-			wmctrl -a "${CMD_CLICK_SOURCE_APP}"
-		  #width=$(echo "${setting_con}" )
-		  
-		  #setting_source=$(system_profiler SPDisplaysDataType | rga -B 5 "Main Display: Yes" | rga Resolution)
-		  #local width=$(echo "${setting_source}" | awk '{print $2}')
-		  # local check_retina=$(echo "${setting_source}" | rga Retina )
-		  # if [ -n "${check_retina}" ];then width=$(((${width} * 100) / 178)) ;fi
-		  #width=$(system_profiler SPDisplaysDataType | grep Resolution | tail -n 1 | awk '{print $2}')
-		  #local multiple_source=$(echo "${setting_source}" | tail -n 1)
-		  # local width_m=$(echo "${multiple_source}" | awk '{print $2}')
-		  # local height_m=$(echo "${multiple_source}" | awk '{print $4}')
-		  #local height=$(((${width} * ${height_m}) / ${width_m} ))
-		  #local height=$(((${width} * ${height_m}) / ${width_m} ))
-
-		  # local width=$(echo "${SETTING_SOURCE}" | rga "${CMDCLICK_SETTING_ITEM_WODTH}=" | gsed 's/'${CMDCLICK_SETTING_ITEM_WODTH}'\=//g')
-		  # local height=$(echo "${SETTING_SOURCE}" | rga "${CMDCLICK_SETTING_ITEM_HEIGHT}=" | gsed 's/'${CMDCLICK_SETTING_ITEM_HEIGHT}'\=//g')
-		  # case "${height}" in 
-		  # 	""|"0") height=$(((${width} * 9) / 16)) ;;
-		  # esac
-
-		  # local x_posi=$((${width} / 2 + ${width} / 5))
-		  # local y_posi=$(((${height} * 1) / 5))
-		  # box_size=($((${width} - ${x_posi})) $((${height} - ${y_posi})) 100)
-		  # open -a ${CMD_CLICK_SOURCE_APP}
-		  # osascript \
-		  # -e "tell application \"${CMD_CLICK_SOURCE_APP}\" 
-		  # ignoring application responses
-		  # set bounds of front window to {${x_posi}, ${y_posi}, $width, $height}
-		  # end ignoring
-		  # end tell"
+			#nircmd win setsize process ${CMD_CLICK_SOURCE_APP}.exe ${CMCCLICL_RIGHT_SIZE}
+			# nircmd.exe win setsize ititle "${WINDOW_TITLE}" "${CMCCLICL_RIGHT_SIZE}"
+			resize_base_cmd "${CMCCLICL_RIGHT_SIZE}"
 		}
 		export -f right_box
 
 		center_box(){
-		  # setting_con=$(cat "${CMDCLICKL_SETTUING_FILE_PATH}")
-		  # width=$(echo "${setting_con}" | grep "${CMDCLICK_SETTING_ITEM_WODTH}=" | sed 's/'${CMDCLICK_SETTING_ITEM_WODTH}'\=//')
-		  
-		  # #setting_source=$(system_profiler SPDisplaysDataType  | rga -B 5 "Main Display: Yes" | rga Resolution)
-		  # local setting_source=$(echo "Resolution: 2560 x 1600 Retina")
-		  # local width=$(echo "${setting_source}" | awk '{print $2}')
-		  # local check_retina=$(echo "${setting_source}" | rga Retina )
-		  # if [ -n "${check_retina}" ];then width=$(((${width} * 10) / 17)) ;fi
-		  # #width=$(system_profiler SPDisplaysDataType | grep Resolution | tail -n 1 | awk '{print $2}')
-		  # local multiple_source=$(echo "${setting_source}" | tail -n 1)
-		  # local width_m=$(echo "${multiple_source}" | awk '{print $2}')
-		  # local height_m=$(echo "${multiple_source}" | awk '{print $4}')
-		  # local height=$(((${width} * ${height_m}) / ${width_m} ))
-	  	  nircmd win setsize process ${CMD_CLICK_SOURCE_APP}.exe ${CMDCLICL_MAXIMIZE_GEO}
-		  wmctrl -a "${CMD_CLICK_SOURCE_APP}"
-		  
-			# local width=$(echo "${SETTING_SOURCE}" | rga "${CMDCLICK_SETTING_ITEM_WODTH}=" | gsed 's/'${CMDCLICK_SETTING_ITEM_WODTH}'\=//g')
-			# local height=$(echo "${SETTING_SOURCE}" | rga "${CMDCLICK_SETTING_ITEM_HEIGHT}=" | gsed 's/'${CMDCLICK_SETTING_ITEM_HEIGHT}'\=//g')
-			# case "${height}" in 
-			# ""|"0") height=$(((${width} * 9) / 16)) ;;
-			# esac
-			# local x_posi=$((${width} / 10 ))
-			# local y_posi=$(((${height} * 1) / 20))
-			# local x_posi2=$((${width} - ${x_posi} ))
-			# local before_box_size="${box_size}"
-			# box_size=($((${width} - ${x_posi})) $((${height} - ${y_posi})) $((${height} - ${y_posi})))
-			# open -a ${CMD_CLICK_SOURCE_APP}
-			# if [ "${box_size[0]}" == "${before_box_size[0]}" ] && [ "${box_size[1]}" == "${before_box_size[1]}" ] && [ "${box_size[2]}" == "${before_box_size[2]}" ];then
-			# 	:;
-			# else
-			# 	osascript \
-			# 	-e "tell application \"${CMD_CLICK_SOURCE_APP}\" 
-			# 	ignoring application responses
-			# 	set bounds of front window to {${x_posi}, ${y_posi}, $x_posi2, $height}
-			# 	end ignoring
-			# 	end tell"
-			# fi
+		  #nircmd win setsize process ${CMD_CLICK_SOURCE_APP}.exe ${CMDCLICL_MAXIMIZE_GEO}
+	  	  # nircmd.exe win setsize ititle "${WINDOW_TITLE}" "${CMDCLICL_MAXIMIZE_GEO}"
+		  resize_base_cmd "${CMDCLICL_MAXIMIZE_GEO}"
+		  # powershell.exe -c '
+		  # 		$host.UI.RawUI.WindowTitle = "'${WINDOW_TITLE}'"
+		  # 		$MAIN_WINDOW_TITLE="*'${WINDOW_TITLE}'*"
+				# Add-Type -AssemblyName UIAutomationClient
+				# $hwnd=(Get-Process |?{$_.MainWindowTitle -like $MAIN_WINDOW_TITLE})[0].MainWindowHandle
+				# $window=[System.Windows.Automation.AutomationElement]::FromHandle($hwnd)
+				# $windowPattern=$window.GetCurrentPattern([System.Windows.Automation.WindowPattern]::Pattern)
+				# $windowPattern.SetWindowVisualState([System.Windows.Automation.WindowVisualState]::Maximized)'
 		}
 
 		maximize_app(){
-		  # setting_con=$(cat "${CMDCLICKL_SETTUING_FILE_PATH}")
-		  # width=$(echo "${setting_con}" | grep "${CMDCLICK_SETTING_ITEM_WODTH}=" | sed 's/'${CMDCLICK_SETTING_ITEM_WODTH}'\=//')
-		  # multiple_source=$(system_profiler SPDisplaysDataType | grep Resolution | tail -n 1)
-		  
-		  #setting_source=$(system_profiler SPDisplaysDataType | rga -B 5 "Main Display: Yes" | rga Resolution)
-		  # local setting_source=$(echo "Resolution: 2560 x 1600 Retina")
-		  # local width=$(echo "${setting_source}"  | awk '{print $2}')
-		  # local check_retina=$(echo "${setting_source}"| rga Retina )
-		  # if [ -n "${check_retina}" ];then width=$(((${width} * 100) / 178)) ;fi
-		  # #width=$(system_profiler SPDisplaysDataType | grep Resolution | tail -n 1 | awk '{print $2}')
-		  # local multiple_source=$(echo "${setting_source}" | tail -n 1)
-		  # local width_m=$(echo "${multiple_source}" | awk '{print $2}')
-		  # local height_m=$(echo "${multiple_source}" | awk '{print $4}')
-		  # local height=$(((${width} * ${height_m}) / ${width_m} ))
-
 		  local width=$(echo "${SETTING_SOURCE}" | grep "${CMDCLICK_SETTING_ITEM_WODTH}=" | sed 's/'${CMDCLICK_SETTING_ITEM_WODTH}'\=//')
 		  local height=$(echo "${SETTING_SOURCE}" | grep "${CMDCLICK_SETTING_ITEM_HEIGHT}=" | sed 's/'${CMDCLICK_SETTING_ITEM_HEIGHT}'\=//')
 		  case "${height}" in 
@@ -325,23 +273,6 @@ case  "${IMPORT_CMDCLICK_VAL}" in
 		}
 
 		left_maximize_box(){
-		  # setting_con=$(cat "${CMDCLICKL_SETTUING_FILE_PATH}")
-		  # width=$(echo "${setting_con}" | grep "${CMDCLICK_SETTING_ITEM_WODTH}=" | sed 's/'${CMDCLICK_SETTING_ITEM_WODTH}'\=//')
-		  # #width=$(system_profiler SPDisplaysDataType | grep Resolution | tail -n 1 | awk '{print $2}')
-		  # multiple_source=$(system_profiler SPDisplaysDataType | grep Resolution | tail -n 1)
-		  
-		  #setting_source=$(system_profiler SPDisplaysDataType | rga -B 5 "Main Display: Yes" | rga Resolution)
-
-		  # local setting_source=$(echo "Resolution: 2560 x 1600 Retina")
-		  # local width=$(echo "${setting_source}" | awk '{print $2}')
-		  # local check_retina=$(echo "${setting_source}"  | rga Retina )
-		  # if [ -n "${check_retina}" ];then width=$(((${width} * 100) / 178)) ;fi
-		  # #width=$(system_profiler SPDisplaysDataType | grep Resolution | tail -n 1 | awk '{print $2}')
-		  # local multiple_source=$(echo "${setting_source}"  | tail -n 1)
-		  # local width_m=$(echo "${multiple_source}" | awk '{print $2}')
-		  # local height_m=$(echo "${multiple_source}" | awk '{print $4}')
-		  # local height=$(((${width} * ${height_m}) / ${width_m} ))
-
 		  local width=$(echo "${SETTING_SOURCE}" | grep "${CMDCLICK_SETTING_ITEM_WODTH}=" | sed 's/'${CMDCLICK_SETTING_ITEM_WODTH}'\=//')
 		  local height=$(echo "${SETTING_SOURCE}" | grep "${CMDCLICK_SETTING_ITEM_HEIGHT}=" | sed 's/'${CMDCLICK_SETTING_ITEM_HEIGHT}'\=//')
 		  case "${height}" in 
@@ -362,48 +293,15 @@ case  "${IMPORT_CMDCLICK_VAL}" in
 		}
 
 		right_maximize_box(){
-			wmctrl -a "${CMD_CLICK_SOURCE_APP}"
-			nircmd win setsize process ${CMD_CLICK_SOURCE_APP}.exe 1000 100 610 810
-		  # setting_con=$(cat "${CMDCLICKL_SETTUING_FILE_PATH}")
-		  # width=$(echo "${setting_con}" | grep "${CMDCLICK_SETTING_ITEM_WODTH}=" | sed 's/'${CMDCLICK_SETTING_ITEM_WODTH}'\=//')
-		  # #width=$(system_profiler SPDisplaysDataType | grep Resolution | tail -n 1 | awk '{print $2}')
-		  # multiple_source=$(system_profiler SPDisplaysDataType | grep Resolution | tail -n 1)
-		  # width_m=$(echo "${multiple_source}" | awk '{print $2}')
-		  #setting_source=$(system_profiler SPDisplaysDataType | rga -B 5 "Main Display: Yes" | rga Resolution)
-		  
-		  # local setting_source=$(echo "Resolution: 2560 x 1600 Retina")
-		  # local width=$(echo "${setting_source}" | awk '{print $2}')
-		  # local check_retina=$(echo "${setting_source}" | rga Retina )
-		  # if [ -n "${check_retina}" ];then width=$(((${width} * 100) / 178)) ;fi
-		  # #width=$(system_profiler SPDisplaysDataType | grep Resolution | tail -n 1 | awk '{print $2}')
-		  # local multiple_source=$(echo "${setting_source}" | tail -n 1)
-		  
-		  # local width_m=$(echo "${multiple_source}" | awk '{print $2}')
-		  # local height_m=$(echo "${multiple_source}" | awk '{print $4}')
-		  # local height=$(((${width} * ${height_m}) / ${width_m} ))
-
-		  # local width=$(echo "${SETTING_SOURCE}" | grep "${CMDCLICK_SETTING_ITEM_WODTH}=" | sed 's/'${CMDCLICK_SETTING_ITEM_WODTH}'\=//')
-		  # local height=$(echo "${SETTING_SOURCE}" | grep "${CMDCLICK_SETTING_ITEM_HEIGHT}=" | sed 's/'${CMDCLICK_SETTING_ITEM_HEIGHT}'\=//')
-		  # case "${height}" in 
-		  # 	""|"0") height=$(((${width} * 9) / 16)) ;;
-		  # esac
-		  
-		  # local x_posi=$((${width} / 2))
-		  # local y_posi=0
-		  # local x_posi2=${width}
-		  # local y_posi2=${height}
-		  # open -a "${app_name}"
-		  # osascript -e "tell application \"${1}\" 
-		  # ignoring application responses
-		  # set bounds of front window to {${x_posi}, ${y_posi}, ${x_posi2}, ${y_posi2}}
-		  # end ignoring
-		  # end tell"
+			wmctrl.exe -a "${CMD_CLICK_SOURCE_APP}"
+			# nircmd win setsize process ${CMD_CLICK_SOURCE_APP}.exe 1000 100 610 810
+		  	nircmd.exe sendkeypress rwin+right
 		}
 
 
 
 		cmd_click_startup_app(){
-			wmctrl -a "${1}"
+			wmctrl.exe -a "${1}"
 		  # local app_name="${1}"
 		  # local app_path="/Applications/${app_name}.app"
 		  # open "${app_name}"
@@ -416,17 +314,23 @@ case  "${IMPORT_CMDCLICK_VAL}" in
 		}
 
 		cmd_click_paste_terminal(){
-			local before_clip="$(pbpaste)"
-			echo "${1}" | tr -d '\n' | pbcopy
-			wmctrl -a "${2}"
-			xdotool key "^v+{Enter}"
-			echo -n "${before_clip}" | pbcopy
+			local before_clip="$(pbpaste.exe)"
+			echo "${1}" | tr -d '\n' | pbcopy.exe
+			wmctrl.exe -a "${2}"
+			powershell.exe -c 'add-type -AssemblyName System.Windows.Forms; [System.Windows.Forms.SendKeys]::SendWait("^v{ENTER}")'
+			echo -n "${before_clip}" | pbcopy.exe
 		}
 
 
 		execute_cmd_by_xdotool(){
 			cmd_click_paste_terminal "${1}" "${CMD_CLICK_TARGET_APP}" 
 		}
+
+		open_editor(){
+			cd "$(dirname "${1}")"
+	        ${CMDCLICK_EDITOR_CMD} "$(basename "${1}")"
+		}
+		export -f open_editor
 
 		init(){
 			# lecho "index:CMDCLICK_CD_FILE_PATH: ${CMDCLICK_CD_FILE_PATH}"
@@ -439,9 +343,35 @@ case  "${IMPORT_CMDCLICK_VAL}" in
 				add_chdir_cmd_ini_file "${CMDCLICK_DEFAULT_INI_FILE_DIR_PATH}"
 			fi
 			# lecho "SECONDS_INI_FILE_DIR_PATH:-1: ${SECONDS_INI_FILE_DIR_PATH}"
-			if [ ! -e "${CMDCLICKL_SETTUING_FILE_PATH}" ];then 
-				echo -e "${CMDCLICK_SETTING_ITEM_WODTH}=1366\n${CMDCLICK_SETTING_ITEM_HEIGHT}=" > "${CMDCLICKL_SETTUING_FILE_PATH}" & 
+			if [ ! -e "${CMDCLICKL_SETTUING_FILE_PATH}" ] || [ ! -s "${CMDCLICKL_SETTUING_FILE_PATH}" ];then 
+				local setting_source+="${SETTING_ELEMENT[0]}=WindowsTerminal"
+				setting_source+="\n${SETTING_ELEMENT[1]}=ubuntu2004"
+				setting_source+="\n${SETTING_ELEMENT[2]}=subl.exe"
+				setting_source+="\n${SETTING_ELEMENT[3]}=/mnt"
+				setting_source+="\n${SETTING_ELEMENT[4]}=#!/bin/bash"
+				setting_source+="\n${SETTING_ELEMENT[5]}=70 50 1850 1050"
+				setting_source+="\n# outdislay: 70 50 1850 1050"
+				setting_source+="\n# innnerdisplay: 70 20 1300 750"
+				setting_source+="\n${SETTING_ELEMENT[6]}=1400 330 520 770"
+				setting_source+="\n# innerdisplay:outdisplay 900 130 480 640"
+				setting_source+="\n# outdisplay: 1400 330 520 770"
+				setting_source+="\n${SETTING_ELEMENT[7]}=1230 730 730"
+				setting_source=$(echo -e "${setting_source}")
+				echo -e "${setting_source}" > "${CMDCLICKL_SETTUING_FILE_PATH}" &
+			else 
+				local setting_source=$(cat "${CMDCLICKL_SETTUING_FILE_PATH}")
+				echo "${setting_source}" | grep -e "^${SETTING_ELEMENT[0]}" -e "^${SETTING_ELEMENT[1]}" -e "^${SETTING_ELEMENT[2]}" -e "^${SETTING_ELEMENT[3]}" -e "^${SETTING_ELEMENT[4]}" -e "^${SETTING_ELEMENT[5]}" -e "^${SETTING_ELEMENT[6]}"  -e "^${SETTING_ELEMENT[7]}" | sort | uniq | wc -l | [ ! $(cat) -eq 8 ] && echo "setting file manual repaer" && exit 0			 
 			fi
+			CMD_CLICK_TARGET_APP="$(echo "${setting_source}" | sed -n '/'${SETTING_ELEMENT[0]}'/p' | sed 's/'${SETTING_ELEMENT[0]}'=//')"
+			CMD_CLICK_SOURCE_APP="$(echo "${setting_source}"| sed -n '/'${SETTING_ELEMENT[1]}'/p' | sed 's/'${SETTING_ELEMENT[1]}'=//')"
+			CMDCLICK_EDITOR_CMD="$(echo "${setting_source}" | sed -n '/'${SETTING_ELEMENT[2]}'/p' | sed 's/'${SETTING_ELEMENT[2]}'=//')"
+			CMDCLICK_MNT_PRFIX="$(echo "${setting_source}" | sed -n '/'${SETTING_ELEMENT[3]}'/p' | sed 's/'${SETTING_ELEMENT[3]}'=//')"
+			CMDCLICK_USE_SHELL="$(echo "${setting_source}" | sed -n '/'${SETTING_ELEMENT[4]}'/p' | sed 's/'${SETTING_ELEMENT[4]}'=//')"
+			CMDCLICL_MAXIMIZE_GEO="$(echo "${setting_source}" | sed -n '/'${SETTING_ELEMENT[5]}'/p' | sed 's/'${SETTING_ELEMENT[5]}'=//')"
+			CMCCLICL_RIGHT_SIZE="$(echo "${setting_source}" | sed -n '/'${SETTING_ELEMENT[6]}'/p' | sed 's/'${SETTING_ELEMENT[6]}'=//')"
+			box_size=($(echo "${setting_source}" | sed -n '/'${SETTING_ELEMENT[7]}'/p' | sed 's/'${SETTING_ELEMENT[7]}'=//'))
+			# becuase use in input gui's fzf
+			export CMDCLICK_EDITOR_CMD=${CMDCLICK_EDITOR_CMD}
 		}
 		init
 

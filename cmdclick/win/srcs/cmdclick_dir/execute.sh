@@ -13,7 +13,7 @@ case "${SIGNAL_CODE}" in
 		case "${EXEC_INPUT_EXECUTE}" in 
 			"C")
 				center_box &
-				EXEC_IN_EXE_DFLT_VL="$(cat "${EXECUTE_FILE_PATH}" | grep "${INI_IN_EXE_DFLT_VL}=" | sed  -e 's/'${INI_INPUT_EXECUTE}'\=//'  | sed  -re "s/([a-zA-Z0-9_-]{1,100})=(.*)/\2/" | sed -e 's/"$//' -e 's/^"//' | tr ',' '\n'  | sed -e 's/\\$//' -e 's/^\s*//' | sed  -r "s/(^[a-zA-Z0-9_-]{0,100})(\:CB)=(.*)/ \| sed 's\/^\1=.*\/\1\2=\3\/'/" | sed  -r "s/(^[a-zA-Z0-9_-]{0,100})=(.*)/ \| sed 's\/^\1=.*\/\1=\2\/'/"  | tr -d '\n' | sed '/^$/d'  | sed 's/ | sed /\n | sed /g' | grep "[' ]$" | tr -d '\n')"
+				EXEC_IN_EXE_DFLT_VL="$(cat "${EXECUTE_FILE_PATH}" | grep "${INI_IN_EXE_DFLT_VL}=" | sed  -e 's/'${INI_INPUT_EXECUTE}'\=//'  | sed  -re "s/([a-zA-Z0-9_-]{1,100})=(.*)/\2/" | sed -e 's/"$//' -e 's/^"//' | tr ',' '\n'  | sed -e 's/\\$//' -e 's/^\s*//' | sed  -r "s/(^[a-zA-Z0-9_-]{0,100})(\:CB)=(.*)/ \| sed 's\/^\1=.*\/\1\2=\3\/'/" | sed  -r "s/(^[a-zA-Z0-9_-]{0,100})=(.*)/ \| sed 's\/^\1=.*\/\1=\2\/'/"  | tr -d '\n' | sed '/^$/d'  | sed 's/ | sed /\n | sed /g' | grep -E "[' ]$" | tr -d '\n')"
 				# echo "${EXEC_IN_EXE_DFLT_VL}"
 				
 				edit_ini_gui "${EXECUTE_FILE_NAME}";wait 
@@ -111,11 +111,11 @@ case "${EXEC_TERMINAL_ON}" in
 				EXECUTE_COMMAND="${EXECUTE_COMMAND}; eval ${EXEC_AFTER_COMMAND}"
 		esac
 		#実行コマンド（本体）
-		execute_cmd_by_xdotool "${EXECUTE_COMMAND}" 
+		execute_cmd_by_xdotool "${EXECUTE_COMMAND}" &
 		;;
 	"OFF")
 		# lecho "TERMINAL_OFF EXEC_TERMINAL_ON: ${EXEC_TERMINAL_ON}"
-		EXECUTE_COMMAND=$(echo "${EXECUTE_COMMAND}" | sed 's/^bash \/mnt/bash /')
+		# EXECUTE_COMMAND=$(echo "${EXECUTE_COMMAND}" | sed 's/^bash \/mnt/bash /')
 		${EXECUTE_COMMAND} >/dev/null 2>&1 &
 		;;
 esac

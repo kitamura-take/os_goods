@@ -7,7 +7,8 @@ create_command_form(){
 	local temp_file_path="${INI_FILE_DIR_PATH}/${temp_file_name}"
 	local default_sh_con=$(cat <(echo "${CMDCLICK_USE_SHELL}") <(echo -e "") <(echo "${INI_SETTING_SECTION_START_NAME}")  <(echo "${INI_SETTING_DEFAULT_GAIN_CON}" | sed -r "s/(${INI_CMD_FILE_NAME}=)/\1${temp_file_name}/") <(echo "${INI_SETTING_SECTION_END_NAME}") <(echo -e "\n") <(echo "${INI_CMD_VARIABLE_SECTION_DEFAULT}")   <(echo -e "\n") <(echo "${SEARCH_INI_CMD_SECTION_START_NAME}") <(echo -e "\n "))
 	echo "${default_sh_con}" > "${temp_file_path}"
-	sleep 0.1 && "${CMDCLICK_EDITOR_CMD}" "${temp_file_path}" &
+	wait
+	sleep 0.8 && open_editor "${temp_file_path}"
 	local add_confirm="Do you really want to add shell file ?"
 	exec 3>&1
 	local VALUES=$(dialog --title "${WINDOW_TITLE}"  --no-shadow --menu "${add_confirm}" ${box_size[@]} \

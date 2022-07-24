@@ -20,7 +20,7 @@ read_ini_to_execute_command(){
 	# lecho "variabl_contensts_setting_value_list_length: ${#variabl_contensts_setting_value_list[@]}"
 	local IFS=$' \n'
 	 #セッティングセクションのデータを取り込む
-	EXECUTE_COMMAND="bash ${CMDCLICK_MNT_PRFIX}${1}"
+	EXECUTE_COMMAND="bash ${1}"
  	EXEC_TERMINAL_ON=${variabl_contensts_setting_value_list[0]}
 	EXEC_OPEN_WHERE=${variabl_contensts_setting_value_list[1]}
 	EXEC_TERMINAL_SIZE=${variabl_contensts_setting_value_list[2]}
