@@ -208,11 +208,8 @@ case  "${IMPORT_CMDCLICK_VAL}" in
 		ACTIVE_CHECK_VARIABLE=0
 		resize_base_cmd(){
 			local size_list=($(echo "${1}"))
-			# echo size_list0 ${size_list[0]}
-			# echo size_list1 ${size_list[1]}
-			# echo size_list2 ${size_list[2]}
-			# echo size_list3 ${size_list[3]}
-			# sleep 10
+			# nircmd.exe win activate ititle "'${WINDOW_TITLE}'" 
+			# nircmd.exe win setsize ititle "'${WINDOW_TITLE}'" '${1}'
 			powershell.exe -c '
 				$host.UI.RawUI.WindowTitle = "'${WINDOW_TITLE}'"
 				$MAIN_WINDOW_TITLE="*'${WINDOW_TITLE}'*"
@@ -233,8 +230,12 @@ case  "${IMPORT_CMDCLICK_VAL}" in
 		}
 		right_box(){
 			#nircmd win setsize process ${CMD_CLICK_SOURCE_APP}.exe ${CMCCLICL_RIGHT_SIZE}
-			# nircmd.exe win setsize ititle "${WINDOW_TITLE}" "${CMCCLICL_RIGHT_SIZE}"
 			resize_base_cmd "${CMCCLICL_RIGHT_SIZE}"
+			# nircmd.exe win activate ititle "${WINDOW_TITLE}"
+			# nircmd.exe win setsize ititle "${WINDOW_TITLE}" ${CMCCLICL_RIGHT_SIZE}
+			
+			# wmctrl.exe -a ubuntu2004
+			
 		}
 		export -f right_box
 
@@ -314,11 +315,13 @@ case  "${IMPORT_CMDCLICK_VAL}" in
 		}
 
 		cmd_click_paste_terminal(){
-			local before_clip="$(pbpaste.exe)"
-			echo "${1}" | tr -d '\n' | pbcopy.exe
+			local before_clip="$(xclip -selection c -o)"
+			echo "${1}" | tr -d '\n' | xclip -selection c
 			wmctrl.exe -a "${2}"
-			powershell.exe -c 'add-type -AssemblyName System.Windows.Forms; [System.Windows.Forms.SendKeys]::SendWait("^v{ENTER}")'
-			echo -n "${before_clip}" | pbcopy.exe
+			nircmd.exe sendkeypress ctrl+shift+v
+			nircmd.exe sendkeypress enter
+			# powershell.exe -c 'add-type -AssemblyName System.Windows.Forms; [System.Windows.Forms.SendKeys]::SendWait("^v{ENTER}")'
+			echo -n "${before_clip}" | xclip -selection c
 		}
 
 

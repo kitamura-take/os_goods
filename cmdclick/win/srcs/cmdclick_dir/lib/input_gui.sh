@@ -87,19 +87,20 @@ input_cmd_index(){
 			case "${EXEC_TERMINAL_ON}" in 
 				"OFF")
 					case "${EXEC_TERMINAL_FOCUS}" in 
-						"ON") right_box "${CMD_CLICK_SOURCE_APP}" ;;
+						"ON") right_box "${CMD_CLICK_SOURCE_APP}" &
+								;;
 					esac
 					;;
 				"ON")
 					case "${EXEC_TERMINAL_FOCUS}" in 
 						"ON") 
-							cmd_click_startup_app #"${CMD_CLICK_TARGET_APP}" &
+							cmd_click_startup_app & #"${CMD_CLICK_TARGET_APP}" &
 							;;
 						"OFF")
 							# if [ "${EXEC_TERMINAL_SIZE}" == "MAX" ]; then right_box "${CMD_CLICK_SOURCE_APP}" ;
 							# elif [ "${EXEC_TERMINAL_SIZE}" == "RMAX" ]; then left_maximize_box "${CMD_CLICK_SOURCE_APP}" 
 							# elif [ "${EXEC_TERMINAL_SIZE}" == "LMAX" ]; then right_maximize_box "${CMD_CLICK_SOURCE_APP}";
-							right_box #"${CMD_CLICK_SOURCE_APP}" &
+							right_box & #"${CMD_CLICK_SOURCE_APP}" &
 							;;
 					esac
 					;;
@@ -108,10 +109,10 @@ input_cmd_index(){
 	esac
 	EXECUTE_COMMAND=""
 	EXEC_TERMINAL_FOCUS=""
-	wait
 	case "${1}" in 
 		"${CMDCLICK_CONF_DIR_PATH}")
-			echo -e "\033];Please Dir ${WINDOW_TITLE} \007"
+			wait
+			echo -e "\033];Please Dir ${WINDOW_TITLE} \007" &
 		 	 LANG=ja_JP.utf8 IFS=$'\t' read -r -a VALUE < <(
 		        echo "${ini_file_list}" | \
 			        fzf --delimiter $'\t' \
@@ -131,7 +132,8 @@ input_cmd_index(){
 			    )
 			;;
 		*)
-			echo -e "\033];Please ${WINDOW_TITLE} \007"
+			wait
+			echo -e "\033];Please ${WINDOW_TITLE} \007" &
 			LANG=ja_JP.utf8 IFS=$'\t' read -r -a VALUE < <(
 		        echo "${ini_file_list}" | \
 			        fzf --delimiter $'\t' \
